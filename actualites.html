@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actualités - Canton de Noépé Media</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <i class="fas fa-broadcast-tower"></i>
+        <div>
+          <h1>Noépé Media</h1>
+          <span>La voix du Canton</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+        <a href="actualites.html" class="active"><i class="fas fa-newspaper"></i> Actualités</a>
+        <a href="tv.html"><i class="fas fa-tv"></i> TV</a>
+        <a href="fm.html"><i class="fas fa-radio"></i> FM</a>
+        <a href="annonces.html"><i class="fas fa-bullhorn"></i> Annonces</a>
+        <a href="osc.html"><i class="fas fa-users"></i> OSC</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO PAGE -->
+  <section class="page-hero">
+    <h2><i class="fas fa-newspaper"></i> Actualités du Canton</h2>
+    <p>Toutes les informations officielles et communautaires</p>
+  </section>
+
+  <!-- FILTRES -->
+  <section class="filters-section">
+    <div class="filters-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher un article..." onkeyup="filtrerActualites()">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filtrerParCategorie('Tous')">Tous</button>
+        <button class="filter-btn" onclick="filtrerParCategorie('Officiel')">Officiel</button>
+        <button class="filter-btn" onclick="filtrerParCategorie('Communautaire')">Communautaire</button>
+        <button class="filter-btn" onclick="filtrerParCategorie('Événements')">Événements</button>
+        <button class="filter-btn" onclick="filtrerParCategorie('Projets')">Projets</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTE DES ACTUALITÉS -->
+  <section class="news-list">
+    <div class="news-grid" id="actualitesContainer">
+      <!-- Les actualités seront chargées ici dynamiquement -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Noépé Media</h3>
+        <p>La plateforme d'information officielle du Canton de Noépé</p>
+      </div>
+      <div class="footer-section">
+        <h3>Liens rapides</h3>
+        <a href="actualites.html">Actualités</a>
+        <a href="tv.html">TV</a>
+        <a href="fm.html">FM</a>
+        <a href="annonces.html">Annonces</a>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <p><i class="fas fa-envelope"></i> culturefusion360@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +228 92 59 78 79</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Canton de Noépé Media — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT POUR CHARGER LES ACTUALITÉS -->
+  <script>
+    let toutesLesActualites = [];
+
+    fetch('data/actualites.json')
+      .then(response => response.json())
+      .then(data => {
+        toutesLesActualites = data.actualites;
+        afficherActualites(toutesLesActualites);
+      })
+      .catch(error => console.error('Erreur:', error));
+
+    function afficherActualites(actualites) {
+      const container = document.getElementById('actualitesContainer');
+      container.innerHTML = '';
+
+      if (actualites.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Aucune actualité trouvée</p>';
+        return;
+      }
+
+      actualites.forEach(actualite => {
+        const dateFormatee = new Date(actualite.date).toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+
+        // Vérifier si une image existe
+        const hasImage = actualite.image && actualite.image !== '';
+        const imageClass = hasImage ? 'has-image' : '';
+        
+        const imageContent = hasImage 
+          ? `<img src="${actualite.image}" alt="${actualite.titre}" onerror="this.style.display='none'; this.parentElement.querySelector('i').style.display='block';">`
+          : '<i class="fas fa-image"></i>';
+
+        const card = `
+          <article class="news-card" data-categorie="${actualite.categorie}">
+            <div class="news-image ${imageClass}">
+              ${imageContent}
+              <i class="fas fa-image" style="display:none;"></i>
+              <span class="news-category">${actualite.categorie}</span>
+            </div>
+            <div class="news-content">
+              <span class="news-date"><i class="far fa-calendar"></i> ${dateFormatee}</span>
+              <h3>${actualite.titre}</h3>
+              <p>${actualite.resume}</p>
+              <a href="${actualite.lien}" class="read-more">Lire la suite <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </article>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    function filtrerParCategorie(categorie) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.trim() === categorie) {
+          btn.classList.add('active');
+        }
+      });
+
+      if (categorie === 'Tous') {
+        afficherActualites(toutesLesActualites);
+      } else {
+        const actualitesFiltrees = toutesLesActualites.filter(a => a.categorie === categorie);
+        afficherActualites(actualitesFiltrees);
+      }
+    }
+
+    function filtrerActualites() {
+      const recherche = document.getElementById('searchInput').value.toLowerCase();
+      const actualitesFiltrees = toutesLesActualites.filter(a => 
+        a.titre.toLowerCase().includes(recherche) || 
+        a.resume.toLowerCase().includes(recherche)
+      );
+      afficherActualites(actualitesFiltrees);
+    }
+  </script>
+
+</body>
+</html>

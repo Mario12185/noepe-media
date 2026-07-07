@@ -1,0 +1,59 @@
+{
+  "emissions": [
+    {
+      "id": 1,
+      "titre": "Journal du canton - Édition du matin",
+      "description": "Toutes les actualités du canton en 15 minutes",
+      "fichier": "audio/journal-matin-06-07-2026.mp3",
+      "couverture": "images/fm-journal-matin-2026-07-06.jpg",
+      "duree": "15:30",
+      "date": "2026-07-06",
+      "categorie": "Journal",
+      "presentateur": "Jean Koffi"
+    },
+    {
+      "id": 2,
+      "titre": "Interview : Le chef du canton répond aux questions",
+      "description": "Entretien exclusif sur les projets en cours",
+      "fichier": "audio/interview-chef-05-07-2026.mp3",
+      "couverture": "images/fm-interview-chef-2026-07-05.jpg",
+      "duree": "22:15",
+      "date": "2026-07-05",
+      "categorie": "Interview",
+      "presentateur": "Marie Diallo"
+    },
+    {
+      "id": 3,
+      "titre": "Message de sensibilisation : Hygiène et santé",
+      "description": "Conseils pratiques pour la saison des pluies",
+      "fichier": "audio/sensibilisation-04-07-2026.mp3",
+      "couverture": "images/fm-sensibilisation-sante-2026-07-04.jpg",
+      "duree": "08:45",
+      "date": "2026-07-04",
+      "categorie": "Message",
+      "presentateur": "Dr. Amadou"
+    },
+    {
+      "id": 4,
+      "titre": "Émission musicale : Les talents du canton",
+      "description": "Découvrez les artistes locaux et leur musique",
+      "fichier": "audio/musique-03-07-2026.mp3",
+      "couverture": "images/fm-emission-musicale-2026-07-03.jpg",
+      "duree": "45:20",
+      "date": "2026-07-03",
+      "categorie": "Émission",
+      "presentateur": "Fatou Traoré"
+    },
+    {
+      "id": 5,
+      "titre": "Titre de l'émission",
+      "description": "Description de l'émission",
+      "fichier": "audio/mon-fichier.mp3",
+      "couverture": "images/fm-action-culturelle-2026-07-07.jpg",
+      "duree": "15:30",
+      "date": "2026-07-07",
+      "categorie": "Journal",
+      "presentateur": "Nom du présentateur"
+    }
+  ]
+}

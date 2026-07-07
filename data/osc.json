@@ -1,0 +1,76 @@
+{
+  "organisations": [
+    {
+      "id": 1,
+      "nom": "OSC Éducation pour Tous",
+      "categorie": "Éducation",
+      "description": "Organisation dédiée à la promotion de l'éducation et à l'alphabétisation dans le canton. Active depuis 2015.",
+      "logo": "images/osc-education-pour-tous.png",
+      "photo": "images/osc-education-action.jpg",
+      "siege": "Village central",
+      "membres": 150,
+      "annee": 2015,
+      "contact": "education@noepe.org"
+    },
+    {
+      "id": 2,
+      "nom": "Association Santé Communautaire",
+      "categorie": "Santé",
+      "description": "Œuvre pour l'amélioration de la santé publique et l'accès aux soins dans les zones rurales du canton.",
+      "logo": "images/osc-sante-communautaire.png",
+      "photo": "images/osc-sante-consultation.jpg",
+      "siege": "Quartier Nord",
+      "membres": 200,
+      "annee": 2012,
+      "contact": "sante@noepe.org"
+    },
+    {
+      "id": 3,
+      "nom": "Green Noépé",
+      "categorie": "Environnement",
+      "description": "Organisation engagée dans la protection de l'environnement et le développement durable au niveau local.",
+      "logo": "images/osc-green-noepe.png",
+      "photo": "images/osc-environnement-plantation.jpg",
+      "siege": "Zone verte",
+      "membres": 80,
+      "annee": 2018,
+      "contact": "green@noepe.org"
+    },
+    {
+      "id": 4,
+      "nom": "Association de Développement Local",
+      "categorie": "Développement",
+      "description": "Travaille sur les projets de développement communautaire et l'autonomisation des populations locales.",
+      "logo": "images/osc-developpement-local.png",
+      "photo": "images/osc-developpement-action.jpg",
+      "siege": "Centre-ville",
+      "membres": 120,
+      "annee": 2010,
+      "contact": "developpement@noepe.org"
+    },
+    {
+      "id": 5,
+      "nom": "Femmes Actives de Noépé",
+      "categorie": "Développement",
+      "description": "Organisation dédiée à l'autonomisation des femmes et à la promotion de l'égalité des genres dans le canton.",
+      "logo": "images/osc-femmes-actives.png",
+      "photo": "images/osc-femmes-reunion.jpg",
+      "siege": "Quartier Sud",
+      "membres": 180,
+      "annee": 2014,
+      "contact": "femmes@noepe.org"
+    },
+    {
+      "id": 6,
+      "nom": "Jeunesse Unie pour le Changement",
+      "categorie": "Développement",
+      "description": "Mouvement de jeunes engagé dans les projets communautaires et la promotion de la participation citoyenne.",
+      "logo": "images/osc-jeunesse-unie.png",
+      "photo": "images/osc-jeunesse-evenement.jpg",
+      "siege": "Quartier Est",
+      "membres": 250,
+      "annee": 2016,
+      "contact": "jeunesse@noepe.org"
+    }
+  ]
+}

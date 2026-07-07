@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSC - Canton de Noépé Media</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <i class="fas fa-broadcast-tower"></i>
+        <div>
+          <h1>Noépé Media</h1>
+          <span>La voix du Canton</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+        <a href="actualites.html"><i class="fas fa-newspaper"></i> Actualités</a>
+        <a href="tv.html"><i class="fas fa-tv"></i> TV</a>
+        <a href="fm.html"><i class="fas fa-radio"></i> FM</a>
+        <a href="annonces.html"><i class="fas fa-bullhorn"></i> Annonces</a>
+        <a href="osc.html" class="active"><i class="fas fa-users"></i> OSC</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO PAGE -->
+  <section class="page-hero">
+    <h2><i class="fas fa-users"></i> Organisations de la Société Civile</h2>
+    <p>Découvrez les OSC partenaires du Canton de Noépé</p>
+  </section>
+
+  <!-- RECHERCHE ET FILTRES -->
+  <section class="filters-section">
+    <div class="filters-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchOSC" placeholder="Rechercher une organisation..." onkeyup="filtrerOSC()">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filtrerParCategorieOSC('Toutes')">Toutes</button>
+        <button class="filter-btn" onclick="filtrerParCategorieOSC('Éducation')">Éducation</button>
+        <button class="filter-btn" onclick="filtrerParCategorieOSC('Santé')">Santé</button>
+        <button class="filter-btn" onclick="filtrerParCategorieOSC('Environnement')">Environnement</button>
+        <button class="filter-btn" onclick="filtrerParCategorieOSC('Développement')">Développement</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTE DES OSC -->
+  <section class="osc-list">
+    <div class="osc-grid" id="oscContainer">
+      <!-- Les OSC seront chargées ici dynamiquement -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Noépé Media</h3>
+        <p>La plateforme d'information officielle du Canton de Noépé</p>
+      </div>
+      <div class="footer-section">
+        <h3>Liens rapides</h3>
+        <a href="actualites.html">Actualités</a>
+        <a href="tv.html">TV</a>
+        <a href="fm.html">FM</a>
+        <a href="annonces.html">Annonces</a>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <p><i class="fas fa-envelope"></i> culturefusion360@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +228 92 59 78 79</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Canton de Noépé Media — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    let toutesLesOSC = [];
+
+    fetch('data/osc.json')
+      .then(response => response.json())
+      .then(data => {
+        toutesLesOSC = data.organisations;
+        afficherOSC(toutesLesOSC);
+      })
+      .catch(error => console.error('Erreur:', error));
+
+    function afficherOSC(osc) {
+      const container = document.getElementById('oscContainer');
+      container.innerHTML = '';
+
+      if (osc.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Aucune organisation trouvée</p>';
+        return;
+      }
+
+      // Icônes par catégorie (fallback si pas de logo)
+      const iconesParCategorie = {
+        'Éducation': 'fa-graduation-cap',
+        'Santé': 'fa-heartbeat',
+        'Environnement': 'fa-leaf',
+        'Développement': 'fa-hands-helping',
+        'default': 'fa-users'
+      };
+
+      osc.forEach(org => {
+        const iconeCategorie = iconesParCategorie[org.categorie] || iconesParCategorie.default;
+
+        // Gestion du logo
+        const hasLogo = org.logo && org.logo !== '';
+        const logoContent = hasLogo
+          ? `<img src="${org.logo}" alt="${org.nom}" onerror="this.style.display='none'; this.parentElement.querySelector('.osc-fallback-icon').style.display='flex';">
+             <i class="fas ${iconeCategorie} osc-fallback-icon" style="display:none;"></i>`
+          : `<i class="fas ${iconeCategorie} osc-fallback-icon"></i>`;
+
+        // Gestion de la photo
+        const hasPhoto = org.photo && org.photo !== '';
+        const photoContent = hasPhoto
+          ? `<img src="${org.photo}" alt="${org.nom}" class="osc-photo" onerror="this.style.display='none';">`
+          : '';
+
+        const card = `
+          <div class="osc-card">
+            <div class="osc-header">
+              <div class="osc-logo ${hasLogo ? 'has-image' : ''}">
+                ${logoContent}
+              </div>
+              <div class="osc-info">
+                <h3>${org.nom}</h3>
+                <span class="osc-category">${org.categorie}</span>
+              </div>
+            </div>
+            ${hasPhoto ? `<div class="osc-photo-container">${photoContent}</div>` : ''}
+            <div class="osc-content">
+              <p>${org.description}</p>
+              <div class="osc-details">
+                <div class="detail-item">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Siège : ${org.siege}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-users"></i>
+                  <span>${org.membres} membres</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-calendar"></i>
+                  <span>Fondée en ${org.annee}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-envelope"></i>
+                  <span>${org.contact}</span>
+                </div>
+              </div>
+              <div class="osc-actions">
+                <a href="mailto:${org.contact}" class="btn btn-primary"><i class="fas fa-envelope"></i> Contacter</a>
+                <a href="#" class="btn btn-secondary"><i class="fas fa-info-circle"></i> Voir plus</a>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    function filtrerParCategorieOSC(categorie) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.trim() === categorie) {
+          btn.classList.add('active');
+        }
+      });
+
+      if (categorie === 'Toutes') {
+        afficherOSC(toutesLesOSC);
+      } else {
+        const oscFiltrees = toutesLesOSC.filter(o => o.categorie === categorie);
+        afficherOSC(oscFiltrees);
+      }
+    }
+
+    function filtrerOSC() {
+      const recherche = document.getElementById('searchOSC').value.toLowerCase();
+      const oscFiltrees = toutesLesOSC.filter(o => 
+        o.nom.toLowerCase().includes(recherche) || 
+        o.description.toLowerCase().includes(recherche) ||
+        o.categorie.toLowerCase().includes(recherche)
+      );
+      afficherOSC(oscFiltrees);
+    }
+  </script>
+
+</body>
+</html>

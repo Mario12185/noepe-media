@@ -1,0 +1,54 @@
+{
+  "actualites": [
+    {
+      "id": 1,
+      "titre": "Réunion du conseil cantonal",
+      "categorie": "Officiel",
+      "date": "2026-07-06",
+      "resume": "Le conseil cantonal s'est réuni ce weekend pour discuter des projets prioritaires pour le prochain trimestre.",
+      "contenu": "Le conseil cantonal s'est réuni ce weekend pour discuter des projets prioritaires. Plusieurs décisions importantes ont été prises concernant l'infrastructure et l'éducation. Parmi les projets adoptés : la réfection de la route principale, la construction d'une nouvelle école et le renforcement des services de santé.",
+      "image": "images/actualite-conseil-cantonal-2026-07-06.jpg",
+      "lien": "#"
+    },
+    {
+      "id": 2,
+      "titre": "Programme des fêtes communautaires 2026",
+      "categorie": "Événements",
+      "date": "2026-07-05",
+      "resume": "Les festivités annuelles du canton débuteront le 15 juillet avec un programme riche et varié.",
+      "contenu": "Les festivités annuelles du canton débuteront le 15 juillet. Au programme : concerts, spectacles, compétitions sportives et activités culturelles. La journée d'ouverture sera marquée par une cérémonie officielle en présence des autorités locales.",
+      "image": "images/actualite-fetes-communautaires-2026-07-05.jpg",
+      "lien": "#"
+    },
+    {
+      "id": 3,
+      "titre": "Nouveau partenariat avec les OSC",
+      "categorie": "Communautaire",
+      "date": "2026-07-04",
+      "resume": "Le canton annonce un partenariat renforcé avec les organisations de la société civile.",
+      "contenu": "Le canton annonce un partenariat renforcé avec les organisations de la société civile pour améliorer les services aux citoyens. Ce partenariat couvre plusieurs domaines : éducation, santé, environnement et développement économique.",
+      "image": "images/actualite-partenariat-osc-2026-07-04.jpg",
+      "lien": "#"
+    },
+    {
+      "id": 4,
+      "titre": "Lancement du projet d'adduction d'eau potable",
+      "categorie": "Projets",
+      "date": "2026-07-03",
+      "resume": "Un projet majeur d'adduction d'eau potable va démarrer dans les zones rurales du canton.",
+      "contenu": "Un projet majeur d'adduction d'eau potable va démarrer dans les zones rurales du canton. Ce projet bénéficiera à plus de 5000 habitants. Les travaux devraient durer 6 mois et seront financés par des partenaires internationaux.",
+      "image": "images/actualite-projet-eau-potable-2026-07-03.jpg",
+      "lien": "#"
+    },
+    {
+      "id": 5,
+      "titre": "Ton titre ici",
+      "categorie": "Officiel",
+      "date": "2026-07-07",
+      "resume": "Court résumé de l'article",
+      "contenu": "Contenu complet de l'article...",
+      "image": "images/actualite-action-culturelle-2026-07-07.jpg",
+      "lien": "#"
+    }
+  ]
+}

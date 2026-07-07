@@ -1,0 +1,59 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "titre": "Réunion du conseil cantonal - 05 Juillet 2026",
+      "description": "Revivez en images la dernière réunion du conseil cantonal avec les décisions importantes prises pour le développement du canton.",
+      "youtube_id": "dQw4w9WgXcQ",
+      "miniature": "images/video-reunion-conseil-2026-07-05.jpg",
+      "categorie": "Officiel",
+      "date": "2026-07-05",
+      "duree": "15:30",
+      "vues": 1234
+    },
+    {
+      "id": 2,
+      "titre": "Reportage : Les projets d'infrastructure 2026",
+      "description": "Découvrez les grands projets d'infrastructure prévus pour cette année.",
+      "youtube_id": "VIDEO_ID_2",
+      "miniature": "images/video-reportage-infrastructure-2026-07-04.jpg",
+      "categorie": "Reportages",
+      "date": "2026-07-04",
+      "duree": "22:15",
+      "vues": 856
+    },
+    {
+      "id": 3,
+      "titre": "Interview du chef du canton",
+      "description": "Entretien exclusif avec le chef du canton sur les enjeux actuels.",
+      "youtube_id": "VIDEO_ID_3",
+      "miniature": "images/video-interview-chef-2026-07-03.jpg",
+      "categorie": "Interviews",
+      "date": "2026-07-03",
+      "duree": "18:45",
+      "vues": 1543
+    },
+    {
+      "id": 4,
+      "titre": "Événement : Fête de la jeunesse 2026",
+      "description": "Retour en images sur la fête de la jeunesse qui a réuni plus de 500 jeunes.",
+      "youtube_id": "VIDEO_ID_4",
+      "miniature": "images/video-fete-jeunesse-2026-07-02.jpg",
+      "categorie": "Événements",
+      "date": "2026-07-02",
+      "duree": "08:45",
+      "vues": 2105
+    },
+    {
+      "id": 5,
+      "titre": "Titre de ta vidéo",
+      "description": "Description de la vidéo",
+      "youtube_id": "L_ID_DE_TA_VIDEO",
+      "miniature": "images/video-action-culturelle-2026-07-07.jpg",
+      "categorie": "Reportages",
+      "date": "2026-07-07",
+      "duree": "10:30",
+      "vues": 100
+    }
+  ]
+}

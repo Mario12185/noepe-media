@@ -1,0 +1,796 @@
+﻿/* ============================================
+   VARIABLES ET RESET
+   ============================================ */
+:root {
+  --primary: #1e3a8a;
+  --primary-dark: #1e293b;
+  --secondary: #f59e0b;
+  --accent: #10b981;
+  --bg-light: #f3f4f6;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --shadow: 0 4px 6px rgba(0,0,0,0.1);
+  --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background: var(--white);
+}
+
+/* ============================================
+   HEADER & NAVIGATION
+   ============================================ */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo { display: flex; align-items: center; gap: 15px; }
+.logo i { font-size: 2.5rem; color: var(--secondary); }
+.logo h1 { font-size: 1.8rem; margin: 0; }
+.logo span { font-size: 0.85rem; opacity: 0.9; }
+
+nav { display: flex; gap: 5px; flex-wrap: wrap; }
+nav a {
+  color: var(--white);
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+nav a:hover, nav a.active { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+
+/* ============================================
+   HERO (ACCUEIL)
+   ============================================ */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero-content { max-width: 800px; margin: 0 auto; }
+.hero h2 { font-size: 2.5rem; margin-bottom: 20px; }
+.hero p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.95; }
+
+.hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+.btn {
+  padding: 12px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary { background: var(--secondary); color: var(--white); }
+.btn-primary:hover { background: #d97706; transform: translateY(-2px); }
+.btn-secondary { background: rgba(255,255,255,0.2); color: var(--white); border: 2px solid var(--white); }
+.btn-secondary:hover { background: var(--white); color: var(--primary); }
+
+/* ============================================
+   STATS (ACCUEIL)
+   ============================================ */
+.stats {
+  max-width: 1200px;
+  margin: -40px auto 0;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 30px;
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s;
+}
+.stat-card:hover { transform: translateY(-5px); }
+.stat-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+.stat-card h3 { font-size: 2rem; color: var(--primary); margin: 10px 0; }
+.stat-card p { color: var(--text-light); }
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+  background: var(--primary-dark);
+  color: var(--white);
+  padding: 40px 20px 20px;
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-section h3 { margin-bottom: 15px; color: var(--secondary); }
+.footer-section a { display: block; color: var(--white); text-decoration: none; margin-bottom: 8px; opacity: 0.8; }
+.footer-section a:hover { opacity: 1; }
+.footer-section p { opacity: 0.8; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); opacity: 0.7; }
+
+/* ============================================
+   PAGES INTÉRIEURES - HERO
+   ============================================ */
+.page-hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  padding: 60px 20px;
+  text-align: center;
+}
+.page-hero h2 { font-size: 2.5rem; margin-bottom: 15px; color: var(--white); justify-content: center; display: flex; align-items: center; gap: 15px; }
+.page-hero p { font-size: 1.2rem; opacity: 0.95; }
+
+/* ============================================
+   FILTRES ET RECHERCHE (ACTUALITÉS)
+   ============================================ */
+.filters-section {
+  background: var(--bg-light);
+  padding: 30px 20px;
+  margin: 0;
+  max-width: 100%;
+}
+
+.filters-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: 2px solid var(--primary);
+  background: var(--white);
+  color: var(--primary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+
+.filter-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+}
+
+/* ============================================
+   CATÉGORIES (TV & FM)
+   ============================================ */
+.categories-section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.category-tab {
+  padding: 12px 25px;
+  border: 2px solid var(--primary);
+  background: var(--white);
+  color: var(--primary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.category-tab:hover {
+  background: var(--primary);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.category-tab.active {
+  background: var(--primary);
+  color: var(--white);
+  box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+}
+
+/* ============================================
+   GRILLES - ACTUALITÉS, TV, OSC, ANNONCES
+   ============================================ */
+.news-list, .video-grid-section, .osc-list, .ads-section, .audio-list {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.news-list h2, .osc-list h2, .ads-section h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--primary);
+}
+
+.news-grid, .video-grid, .osc-grid, .ads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.audio-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* ============================================
+   CARTES - ACTUALITÉS
+   ============================================ */
+.news-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+}
+.news-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+
+.news-image {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 3rem;
+  position: relative;
+}
+
+.news-category {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--secondary);
+  color: var(--white);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.news-content { padding: 20px; }
+.news-date { color: var(--text-light); font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+.news-content h3 { margin: 10px 0; color: var(--primary); }
+.news-content p { color: var(--text-light); margin-bottom: 15px; }
+
+.read-more {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap 0.3s;
+}
+.read-more:hover { gap: 10px; }
+
+/* ============================================
+   CARTES - VIDÉOS TV
+   ============================================ */
+.featured-video { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+.video-container {
+  background: var(--primary-dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.video-info {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.video-info h3 { color: var(--primary); margin-bottom: 15px; }
+.video-info p { color: var(--text-light); }
+
+.video-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+.video-meta span {
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.video-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.video-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+
+.video-thumbnail {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--white);
+}
+
+.video-thumbnail i {
+  font-size: 4rem;
+  opacity: 0.8;
+}
+
+.video-duration {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.8);
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.video-card-content { padding: 20px; }
+.video-card-content h4 { color: var(--primary); margin-bottom: 10px; }
+.video-card-content p { color: var(--text-light); margin-bottom: 15px; }
+
+/* ============================================
+   CARTES - AUDIO FM
+   ============================================ */
+.main-player { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+.player-container {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius);
+  padding: 40px;
+  color: var(--white);
+  text-align: center;
+}
+
+.player-visual i { font-size: 4rem; margin-bottom: 20px; animation: pulse 2s infinite; }
+.player-visual h3 { font-size: 1.8rem; margin-bottom: 10px; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.player-controls audio {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.player-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 25px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 20px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.audio-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.audio-icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 2.5rem;
+}
+
+.audio-content { flex: 1; }
+.audio-content h4 { color: var(--primary); margin-bottom: 8px; }
+.audio-content p { color: var(--text-light); margin-bottom: 15px; }
+
+.audio-meta {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.audio-meta span {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.audio-content audio { width: 100%; }
+
+/* ============================================
+   CARTES - OSC
+   ============================================ */
+.osc-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+}
+.osc-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+
+.osc-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--white);
+}
+
+.osc-logo {
+  width: 70px;
+  height: 70px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.osc-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
+.osc-category { background: var(--secondary); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+
+.osc-content { padding: 25px; }
+.osc-content p { color: var(--text-light); margin-bottom: 20px; }
+
+.osc-details { margin-bottom: 20px; }
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+.detail-item i { color: var(--primary); width: 20px; }
+
+.osc-actions { display: flex; gap: 10px; }
+.osc-actions .btn { flex: 1; justify-content: center; padding: 10px 20px; font-size: 0.9rem; }
+
+/* ============================================
+   CARTES - ANNONCES
+   ============================================ */
+.ads-section h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ad-card {
+  background: #fff3cd;
+  padding: 25px;
+  border-radius: var(--radius);
+  text-align: center;
+  border-left: 4px solid var(--secondary);
+}
+
+.ad-card i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 15px; }
+.ad-card h4 { color: var(--primary); margin-bottom: 10px; }
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.page-btn {
+  padding: 10px 15px;
+  border: 2px solid var(--primary);
+  background: var(--white);
+  color: var(--primary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.page-btn:hover, .page-btn.active {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+@media (max-width: 768px) {
+  .header-container { flex-direction: column; text-align: center; }
+  nav { margin-top: 15px; justify-content: center; }
+  .hero h2 { font-size: 1.8rem; }
+  .page-hero h2 { font-size: 1.8rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  
+  .filter-buttons, .category-tabs { gap: 8px; }
+  .filter-btn, .category-tab { padding: 8px 15px; font-size: 0.9rem; }
+  
+  .news-grid, .video-grid, .osc-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .audio-card { flex-direction: column; text-align: center; }
+  .audio-icon { margin: 0 auto; }
+  
+  .osc-header { flex-direction: column; text-align: center; }
+  .osc-actions { flex-direction: column; }
+  
+  .video-meta, .player-info { justify-content: center; }
+}
+
+/* ============================================
+   IMAGES DANS LES CARTES
+   ============================================ */
+
+.news-image img,
+.video-thumbnail img,
+.osc-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.news-image i,
+.video-thumbnail i,
+.osc-logo i {
+  z-index: 1;
+}
+
+/* Si l'image existe, masquer l'icône */
+.news-image.has-image i,
+.video-thumbnail.has-image i,
+.osc-logo.has-image i {
+  display: none;
+}
+
+/* Améliorer l'affichage des images */
+.news-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.news-image img {
+  transition: transform 0.3s;
+}
+
+.news-card:hover .news-image img {
+  transform: scale(1.05);
+}
+
+/* Logo plus grand pour OSC */
+.osc-logo.large {
+  width: 120px;
+  height: 120px;
+  font-size: 3rem;
+}
+
+/* ============================================
+   IMAGES - TV, FM, OSC
+   ============================================ */
+
+/* Images dans les vidéos */
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-thumbnail.has-image i {
+  display: none;
+}
+
+.video-thumbnail.has-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.video-card:hover .video-thumbnail img {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+}
+
+/* Images dans le player FM */
+.player-visual {
+  position: relative;
+}
+
+.player-visual img.player-cover {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 4px solid rgba(255,255,255,0.3);
+}
+
+.player-visual.has-image .player-icon {
+  display: none;
+}
+
+/* Images dans les cartes audio */
+.audio-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.audio-icon.has-image i {
+  display: none;
+}
+
+/* Images dans les OSC */
+.osc-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.osc-logo.has-image i {
+  display: none;
+}
+
+.osc-photo-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.osc-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.osc-card:hover .osc-photo {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .player-visual img.player-cover {
+    width: 120px;
+    height: 120px;
+  }
+}
