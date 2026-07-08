@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration - Noépé Media</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .admin-section {
+      background: var(--white);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+    
+    .admin-section h2 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .btn-submit {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-submit:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .success-message {
+      background: #10b981;
+      color: var(--white);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .instructions {
+      background: #fff3cd;
+      padding: 20px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--secondary);
+      margin-bottom: 30px;
+    }
+    
+    .instructions h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .instructions ol {
+      margin-left: 20px;
+    }
+    
+    .instructions li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <i class="fas fa-broadcast-tower"></i>
+        <div>
+          <h1>Noépé Media</h1>
+          <span>Panneau d'administration</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Voir le site</a>
+        <a href="actualites.html"><i class="fas fa-newspaper"></i> Actualités</a>
+        <a href="tv.html"><i class="fas fa-tv"></i> TV</a>
+        <a href="fm.html"><i class="fas fa-radio"></i> FM</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTENU ADMIN -->
+  <div class="admin-container">
+    
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <h3><i class="fas fa-info-circle"></i> Comment utiliser le panneau</h3>
+      <ol>
+        <li>Remplis le formulaire ci-dessous</li>
+        <li>Clique sur "Ajouter"</li>
+        <li>Les données sont générées automatiquement</li>
+        <li>Copie-les dans ton Google Sheet (clique sur le lien en bas)</li>
+        <li>Le site se mettra à jour automatiquement après 1-2 minutes</li>
+      </ol>
+    </div>
+
+    <!-- FORMULAIRE ACTUALITÉ -->
+    <div class="admin-section">
+      <h2><i class="fas fa-newspaper"></i> Ajouter une actualité</h2>
+      <form id="formActualite">
+        <div class="form-group">
+          <label for="act_titre">Titre *</label>
+          <input type="text" id="act_titre" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="act_categorie">Catégorie *</label>
+          <select id="act_categorie" required>
+            <option value="Officiel">Officiel</option>
+            <option value="Communautaire">Communautaire</option>
+            <option value="Événements">Événements</option>
+            <option value="Projets">Projets</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="act_date">Date *</label>
+          <input type="date" id="act_date" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="act_resume">Résumé *</label>
+          <textarea id="act_resume" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="act_contenu">Contenu complet</label>
+          <textarea id="act_contenu" rows="6"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="act_image">Chemin de l'image</label>
+          <input type="text" id="act_image" placeholder="images/actualite-exemple.jpg">
+        </div>
+        
+        <div class="form-group">
+          <label for="act_lien">Lien</label>
+          <input type="text" id="act_lien" placeholder="#" value="#">
+        </div>
+        
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-plus"></i> Générer les données
+        </button>
+        
+        <div class="success-message" id="successActualite"></div>
+      </form>
+    </div>
+
+    <!-- FORMULAIRE VIDÉO -->
+    <div class="admin-section">
+      <h2><i class="fas fa-tv"></i> Ajouter une vidéo</h2>
+      <form id="formVideo">
+        <div class="form-group">
+          <label for="vid_titre">Titre *</label>
+          <input type="text" id="vid_titre" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_description">Description *</label>
+          <textarea id="vid_description" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_youtube_id">ID YouTube *</label>
+          <input type="text" id="vid_youtube_id" required placeholder="Ex: dQw4w9WgXcQ">
+          <small style="color: var(--text-light);">L'ID est la partie après "v=" dans l'URL YouTube</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_categorie">Catégorie *</label>
+          <select id="vid_categorie" required>
+            <option value="Reportages">Reportages</option>
+            <option value="Interviews">Interviews</option>
+            <option value="Événements">Événements</option>
+            <option value="Officiel">Messages officiels</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_date">Date *</label>
+          <input type="date" id="vid_date" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_duree">Durée *</label>
+          <input type="text" id="vid_duree" required placeholder="15:30">
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_vues">Nombre de vues</label>
+          <input type="number" id="vid_vues" value="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="vid_miniature">Chemin de la miniature</label>
+          <input type="text" id="vid_miniature" placeholder="images/video-exemple.jpg">
+        </div>
+        
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-plus"></i> Générer les données
+        </button>
+        
+        <div class="success-message" id="successVideo"></div>
+      </form>
+    </div>
+
+    <!-- FORMULAIRE ÉMISSION AUDIO -->
+    <div class="admin-section">
+      <h2><i class="fas fa-radio"></i> Ajouter une émission audio</h2>
+      <form id="formAudio">
+        <div class="form-group">
+          <label for="aud_titre">Titre *</label>
+          <input type="text" id="aud_titre" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_description">Description *</label>
+          <textarea id="aud_description" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_fichier">Chemin du fichier audio *</label>
+          <input type="text" id="aud_fichier" required placeholder="audio/emission-exemple.mp3">
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_categorie">Catégorie *</label>
+          <select id="aud_categorie" required>
+            <option value="Journal">Journal</option>
+            <option value="Interview">Interview</option>
+            <option value="Message">Message</option>
+            <option value="Émission">Émission</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_date">Date *</label>
+          <input type="date" id="aud_date" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_duree">Durée *</label>
+          <input type="text" id="aud_duree" required placeholder="15:30">
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_presentateur">Présentateur *</label>
+          <input type="text" id="aud_presentateur" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="aud_couverture">Chemin de la couverture</label>
+          <input type="text" id="aud_couverture" placeholder="images/fm-exemple.jpg">
+        </div>
+        
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-plus"></i> Générer les données
+        </button>
+        
+        <div class="success-message" id="successAudio"></div>
+      </form>
+    </div>
+
+    <!-- LIEN GOOGLE SHEET -->
+    <div class="admin-section">
+      <h2><i class="fas fa-table"></i> Accéder au Google Sheet</h2>
+      <p>Clique sur le bouton ci-dessous pour ouvrir ton Google Sheet et coller les données générées :</p>
+      <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTmobXa2DhKDjPkOYpw77aWkqZBjIWMRr2QzK9MIBqO9xWpyajwcusIBYhPB8YehXRBnpZWyPp4bMsT/pubhtml" target="_blank" class="btn btn-primary" style="margin-top: 15px; margin-right: 10px;">
+        <i class="fas fa-eye"></i> Voir le Sheet publié
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/2PACX-1vTmobXa2DhKDjPkOYpw77aWkqZBjIWMRr2QzK9MIBqO9xWpyajwcusIBYhPB8YehXRBnpZWyPp4bMsT/edit" target="_blank" class="btn btn-secondary" style="margin-top: 15px;">
+        <i class="fas fa-edit"></i> Modifier le Sheet
+      </a>
+      <p style="margin-top: 15px; color: var(--text-light);">
+        <strong>Important :</strong> Après avoir modifié le Google Sheet, le site se met à jour automatiquement (peut prendre 1-2 minutes).
+      </p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Noépé Media</h3>
+        <p>Panneau d'administration</p>
+      </div>
+      <div class="footer-section">
+        <h3>Liens rapides</h3>
+        <a href="index.html">Voir le site</a>
+        <a href="actualites.html">Actualités</a>
+        <a href="tv.html">TV</a>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <p><i class="fas fa-envelope"></i> culturefusion360@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +228 92 59 78 79</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Canton de Noépé Media — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    // Configuration Google Sheet
+    const GOOGLE_SHEET_ID = '2PACX-1vTmobXa2DhKDjPkOYpw77aWkqZBjIWMRr2QzK9MIBqO9xWpyajwcusIBYhPB8YehXRBnpZWyPp4bMsT';
+    const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/pub?output=csv`;
+
+    // Formulaire Actualité
+    document.getElementById('formActualite').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const actualite = {
+        id: Date.now(),
+        titre: document.getElementById('act_titre').value,
+        categorie: document.getElementById('act_categorie').value,
+        date: document.getElementById('act_date').value,
+        resume: document.getElementById('act_resume').value,
+        contenu: document.getElementById('act_contenu').value,
+        image: document.getElementById('act_image').value,
+        lien: document.getElementById('act_lien').value || '#'
+      };
+      
+      const jsonData = JSON.stringify(actualite, null, 2);
+      const message = `✅ Données générées avec succès !\n\nCopie ces données dans ton Google Sheet (onglet "Actualités") :\n\n${jsonData}`;
+      
+      document.getElementById('successActualite').textContent = message;
+      document.getElementById('successActualite').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successActualite').style.display = 'none';
+      }, 10000);
+      
+      this.reset();
+    });
+
+    // Formulaire Vidéo
+    document.getElementById('formVideo').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const video = {
+        id: Date.now(),
+        titre: document.getElementById('vid_titre').value,
+        description: document.getElementById('vid_description').value,
+        youtube_id: document.getElementById('vid_youtube_id').value,
+        categorie: document.getElementById('vid_categorie').value,
+        date: document.getElementById('vid_date').value,
+        duree: document.getElementById('vid_duree').value,
+        vues: parseInt(document.getElementById('vid_vues').value) || 0,
+        miniature: document.getElementById('vid_miniature').value
+      };
+      
+      const jsonData = JSON.stringify(video, null, 2);
+      const message = `✅ Données générées avec succès !\n\nCopie ces données dans ton Google Sheet (onglet "Vidéos") :\n\n${jsonData}`;
+      
+      document.getElementById('successVideo').textContent = message;
+      document.getElementById('successVideo').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successVideo').style.display = 'none';
+      }, 10000);
+      
+      this.reset();
+    });
+
+    // Formulaire Audio
+    document.getElementById('formAudio').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const audio = {
+        id: Date.now(),
+        titre: document.getElementById('aud_titre').value,
+        description: document.getElementById('aud_description').value,
+        fichier: document.getElementById('aud_fichier').value,
+        categorie: document.getElementById('aud_categorie').value,
+        date: document.getElementById('aud_date').value,
+        duree: document.getElementById('aud_duree').value,
+        presentateur: document.getElementById('aud_presentateur').value,
+        couverture: document.getElementById('aud_couverture').value
+      };
+      
+      const jsonData = JSON.stringify(audio, null, 2);
+      const message = `✅ Données générées avec succès !\n\nCopie ces données dans ton Google Sheet (onglet "Audio") :\n\n${jsonData}`;
+      
+      document.getElementById('successAudio').textContent = message;
+      document.getElementById('successAudio').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successAudio').style.display = 'none';
+      }, 10000);
+      
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>
