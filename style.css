@@ -162,7 +162,7 @@ footer {
 .page-hero p { font-size: 1.2rem; opacity: 0.95; }
 
 /* ============================================
-   FILTRES ET RECHERCHE (ACTUALITÉS)
+   FILTRES ET RECHERCHE (ACTUALITÉS & OSC)
    ============================================ */
 .filters-section {
   background: var(--bg-light);
@@ -295,6 +295,9 @@ footer {
   font-size: 2rem;
   margin-bottom: 30px;
   color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .news-grid, .video-grid, .osc-grid, .ads-grid {
@@ -331,6 +334,23 @@ footer {
   color: var(--white);
   font-size: 3rem;
   position: relative;
+  overflow: hidden;
+}
+
+.news-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.news-card:hover .news-image img {
+  transform: scale(1.05);
+}
+
+.news-image.has-image i {
+  display: none;
 }
 
 .news-category {
@@ -343,6 +363,7 @@ footer {
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
+  z-index: 2;
 }
 
 .news-content { padding: 20px; }
@@ -413,6 +434,26 @@ footer {
   justify-content: center;
   position: relative;
   color: var(--white);
+  overflow: hidden;
+}
+
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s;
+}
+
+.video-card:hover .video-thumbnail img {
+  transform: scale(1.05);
+}
+
+.video-thumbnail.has-image i {
+  display: none;
 }
 
 .video-thumbnail i {
@@ -430,6 +471,7 @@ footer {
   border-radius: 5px;
   font-size: 0.85rem;
   font-weight: 600;
+  z-index: 2;
 }
 
 .video-card-content { padding: 20px; }
@@ -447,6 +489,23 @@ footer {
   padding: 40px;
   color: var(--white);
   text-align: center;
+}
+
+.player-visual {
+  position: relative;
+}
+
+.player-visual img.player-cover {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 4px solid rgba(255,255,255,0.3);
+}
+
+.player-visual.has-image .player-icon {
+  display: none;
 }
 
 .player-visual i { font-size: 4rem; margin-bottom: 20px; animation: pulse 2s infinite; }
@@ -504,6 +563,18 @@ footer {
   justify-content: center;
   color: var(--white);
   font-size: 2.5rem;
+  overflow: hidden;
+}
+
+.audio-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.audio-icon.has-image i {
+  display: none;
 }
 
 .audio-content { flex: 1; }
@@ -558,6 +629,24 @@ footer {
   justify-content: center;
   font-size: 2rem;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.osc-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.osc-logo.has-image i {
+  display: none;
+}
+
+.osc-logo.large {
+  width: 120px;
+  height: 120px;
+  font-size: 3rem;
 }
 
 .osc-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
@@ -565,6 +654,23 @@ footer {
 
 .osc-content { padding: 25px; }
 .osc-content p { color: var(--text-light); margin-bottom: 20px; }
+
+.osc-photo-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.osc-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.osc-card:hover .osc-photo {
+  transform: scale(1.05);
+}
 
 .osc-details { margin-bottom: 20px; }
 .detail-item {
@@ -582,15 +688,6 @@ footer {
 /* ============================================
    CARTES - ANNONCES
    ============================================ */
-.ads-section h2 {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .ad-card {
   background: #fff3cd;
   padding: 25px;
@@ -601,6 +698,41 @@ footer {
 
 .ad-card i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 15px; }
 .ad-card h4 { color: var(--primary); margin-bottom: 10px; }
+
+/* ============================================
+   APPEL À L'ACTION - ANNONCES
+   ============================================ */
+.ads-cta {
+  margin-top: 50px;
+  padding: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--white);
+}
+
+.ads-cta h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: var(--white);
+}
+
+.ads-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  opacity: 0.95;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-buttons .btn-secondary {
+  background: transparent;
+}
 
 /* ============================================
    PAGINATION
@@ -629,6 +761,114 @@ footer {
 }
 
 /* ============================================
+   RÉSEAUX SOCIAUX - FOOTER
+   ============================================ */
+.social-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.social-links a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.social-links a.facebook:hover { background: #1877f2; }
+.social-links a.whatsapp:hover { background: #25d366; }
+.social-links a.youtube:hover { background: #ff0000; }
+.social-links a.twitter:hover { background: #1da1f2; }
+.social-links a.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+
+.footer-credits {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+/* ============================================
+   BOUTONS DE PARTAGE - ACTUALITÉS
+   ============================================ */
+.share-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.share-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.share-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.share-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.share-btn.facebook { background: #1877f2; }
+.share-btn.whatsapp { background: #25d366; }
+.share-btn.twitter { background: #1da1f2; }
+.share-btn.email { background: #6b7280; }
+
+/* ============================================
+   BOUTON WHATSAPP FLOTTANT
+   ============================================ */
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 2rem;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  z-index: 999;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+/* ============================================
    RESPONSIVE - MOBILE
    ============================================ */
 @media (max-width: 768px) {
@@ -641,7 +881,7 @@ footer {
   .filter-buttons, .category-tabs { gap: 8px; }
   .filter-btn, .category-tab { padding: 8px 15px; font-size: 0.9rem; }
   
-  .news-grid, .video-grid, .osc-grid {
+  .news-grid, .video-grid, .osc-grid, .ads-grid {
     grid-template-columns: 1fr;
   }
   
@@ -652,145 +892,33 @@ footer {
   .osc-actions { flex-direction: column; }
   
   .video-meta, .player-info { justify-content: center; }
-}
-
-/* ============================================
-   IMAGES DANS LES CARTES
-   ============================================ */
-
-.news-image img,
-.video-thumbnail img,
-.osc-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.news-image i,
-.video-thumbnail i,
-.osc-logo i {
-  z-index: 1;
-}
-
-/* Si l'image existe, masquer l'icône */
-.news-image.has-image i,
-.video-thumbnail.has-image i,
-.osc-logo.has-image i {
-  display: none;
-}
-
-/* Améliorer l'affichage des images */
-.news-image {
-  position: relative;
-  overflow: hidden;
-}
-
-.news-image img {
-  transition: transform 0.3s;
-}
-
-.news-card:hover .news-image img {
-  transform: scale(1.05);
-}
-
-/* Logo plus grand pour OSC */
-.osc-logo.large {
-  width: 120px;
-  height: 120px;
-  font-size: 3rem;
-}
-
-/* ============================================
-   IMAGES - TV, FM, OSC
-   ============================================ */
-
-/* Images dans les vidéos */
-.video-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.video-thumbnail.has-image i {
-  display: none;
-}
-
-.video-thumbnail.has-image img {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.video-card:hover .video-thumbnail img {
-  transform: scale(1.05);
-  transition: transform 0.3s;
-}
-
-/* Images dans le player FM */
-.player-visual {
-  position: relative;
-}
-
-.player-visual img.player-cover {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 20px;
-  border: 4px solid rgba(255,255,255,0.3);
-}
-
-.player-visual.has-image .player-icon {
-  display: none;
-}
-
-/* Images dans les cartes audio */
-.audio-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.audio-icon.has-image i {
-  display: none;
-}
-
-/* Images dans les OSC */
-.osc-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.osc-logo.has-image i {
-  display: none;
-}
-
-.osc-photo-container {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-}
-
-.osc-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.osc-card:hover .osc-photo {
-  transform: scale(1.05);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
+  
   .player-visual img.player-cover {
     width: 120px;
     height: 120px;
+  }
+  
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .share-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .ads-cta {
+    padding: 30px 20px;
+  }
+  
+  .ads-cta h3 {
+    font-size: 1.4rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
   }
 }
