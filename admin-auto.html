@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration Auto - Noépé Media</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .admin-section { background: var(--white); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; }
+    .admin-section h2 { color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-dark); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: inherit; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group small { display: block; margin-top: 5px; color: var(--text-light); font-size: 0.85rem; }
+    .btn-submit { background: var(--primary); color: var(--white); padding: 12px 30px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-submit:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+    .success-message { background: #10b981; color: var(--white); padding: 15px; border-radius: 8px; margin-top: 20px; display: none; white-space: pre-wrap; }
+    .error-message { background: #ef4444; color: var(--white); padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+    .loading { display: none; text-align: center; padding: 10px; color: var(--primary); margin-top: 10px; }
+    .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .instructions { background: #fff3cd; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--secondary); margin-bottom: 30px; }
+    .instructions h3 { color: var(--primary); margin-bottom: 10px; }
+    .instructions ol { margin-left: 20px; }
+    .instructions li { margin-bottom: 10px; }
+    .api-status { background: #dbeafe; padding: 15px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .api-status.connected { background: #d1fae5; }
+    .api-status.disconnected { background: #fee2e2; }
+    .api-status i { font-size: 1.5rem; }
+    .tab-buttons { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+    .tab-btn { padding: 12px 25px; border: 2px solid var(--primary); background: var(--white); color: var(--primary); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+    .tab-btn:hover { background: var(--primary); color: var(--white); }
+    .tab-btn.active { background: var(--primary); color: var(--white); }
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <i class="fas fa-broadcast-tower"></i>
+        <div>
+          <h1>Noépé Media</h1>
+          <span>Administration Automatique</span>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Voir le site</a>
+        <a href="actualites.html"><i class="fas fa-newspaper"></i> Actualités</a>
+        <a href="tv.html"><i class="fas fa-tv"></i> TV</a>
+        <a href="fm.html"><i class="fas fa-radio"></i> FM</a>
+        <a href="annonces.html"><i class="fas fa-bullhorn"></i> Annonces</a>
+        <a href="osc.html"><i class="fas fa-users"></i> OSC</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    
+    <!-- STATUT API -->
+    <div class="api-status" id="apiStatus">
+      <i class="fas fa-check-circle" style="color: #10b981;"></i>
+      <div>
+        <strong>API Google Sheets connectée</strong>
+        <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Les données seront ajoutées automatiquement</p>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <h3><i class="fas fa-info-circle"></i> Comment ça marche</h3>
+      <ol>
+        <li>Choisis le type de contenu à ajouter (Actualité, Vidéo, Audio, Annonce)</li>
+        <li>Remplis le formulaire</li>
+        <li>Clique sur "Ajouter" → Les données sont envoyées automatiquement au Google Sheet</li>
+        <li>Attends 1-2 minutes et rafraîchis la page du site concerné</li>
+      </ol>
+    </div>
+
+    <!-- BOUTONS D'ONGLET -->
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="afficherFormulaire('Actualite', this)">
+        <i class="fas fa-newspaper"></i> Actualité
+      </button>
+      <button class="tab-btn" onclick="afficherFormulaire('Video', this)">
+        <i class="fas fa-tv"></i> Vidéo
+      </button>
+      <button class="tab-btn" onclick="afficherFormulaire('Audio', this)">
+        <i class="fas fa-radio"></i> Audio
+      </button>
+      <button class="tab-btn" onclick="afficherFormulaire('Annonce', this)">
+        <i class="fas fa-bullhorn"></i> Annonce
+      </button>
+    </div>
+
+    <!-- FORMULAIRE ACTUALITÉ -->
+    <div class="form-section active" id="sectionActualite">
+      <div class="admin-section">
+        <h2><i class="fas fa-newspaper"></i> Ajouter une actualité</h2>
+        <form id="formActualite">
+          <div class="form-group">
+            <label for="act_titre">Titre *</label>
+            <input type="text" id="act_titre" required>
+          </div>
+          <div class="form-group">
+            <label for="act_categorie">Catégorie *</label>
+            <select id="act_categorie" required>
+              <option value="Officiel">Officiel</option>
+              <option value="Communautaire">Communautaire</option>
+              <option value="Événements">Événements</option>
+              <option value="Projets">Projets</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="act_date">Date *</label>
+            <input type="date" id="act_date" required>
+          </div>
+          <div class="form-group">
+            <label for="act_resume">Résumé *</label>
+            <textarea id="act_resume" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="act_contenu">Contenu complet</label>
+            <textarea id="act_contenu" rows="6"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="act_image">URL de l'image (optionnel)</label>
+            <input type="text" id="act_image" placeholder="Laisser vide pour l'instant">
+            <small>Tu peux laisser vide et ajouter l'image plus tard dans le Google Sheet</small>
+          </div>
+          <div class="form-group">
+            <label for="act_lien">Lien</label>
+            <input type="text" id="act_lien" value="#">
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Ajouter l'actualité
+          </button>
+          <div class="loading" id="loadingActualite"><i class="fas fa-spinner"></i> Envoi en cours...</div>
+          <div class="success-message" id="successActualite"></div>
+          <div class="error-message" id="errorActualite"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE VIDÉO -->
+    <div class="form-section" id="sectionVideo">
+      <div class="admin-section">
+        <h2><i class="fas fa-tv"></i> Ajouter une vidéo</h2>
+        <form id="formVideo">
+          <div class="form-group">
+            <label for="vid_plateforme">Plateforme *</label>
+            <select id="vid_plateforme" required onchange="mettreAJourPlaceholder()">
+              <option value="YouTube">YouTube</option>
+              <option value="TikTok">TikTok</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vid_titre">Titre *</label>
+            <input type="text" id="vid_titre" required>
+          </div>
+          <div class="form-group">
+            <label for="vid_description">Description *</label>
+            <textarea id="vid_description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="vid_youtube_id">ID de la vidéo *</label>
+            <input type="text" id="vid_youtube_id" required placeholder="Ex: dQw4w9WgXcQ">
+            <small id="aide_id"><strong>YouTube :</strong> L'ID est après "v=" dans l'URL<br>Ex: https://www.youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong></small>
+          </div>
+          <div class="form-group">
+            <label for="vid_categorie">Catégorie *</label>
+            <select id="vid_categorie" required>
+              <option value="Reportages">Reportages</option>
+              <option value="Interviews">Interviews</option>
+              <option value="Événements">Événements</option>
+              <option value="Officiel">Messages officiels</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vid_date">Date *</label>
+            <input type="date" id="vid_date" required>
+          </div>
+          <div class="form-group">
+            <label for="vid_duree">Durée *</label>
+            <input type="text" id="vid_duree" required placeholder="15:30">
+          </div>
+          <div class="form-group">
+            <label for="vid_vues">Nombre de vues</label>
+            <input type="number" id="vid_vues" value="0">
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Ajouter la vidéo
+          </button>
+          <div class="loading" id="loadingVideo"><i class="fas fa-spinner"></i> Envoi en cours...</div>
+          <div class="success-message" id="successVideo"></div>
+          <div class="error-message" id="errorVideo"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE AUDIO -->
+    <div class="form-section" id="sectionAudio">
+      <div class="admin-section">
+        <h2><i class="fas fa-radio"></i> Ajouter une émission audio</h2>
+        <form id="formAudio">
+          <div class="form-group">
+            <label for="aud_titre">Titre *</label>
+            <input type="text" id="aud_titre" required>
+          </div>
+          <div class="form-group">
+            <label for="aud_description">Description *</label>
+            <textarea id="aud_description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="aud_fichier">URL du fichier audio *</label>
+            <input type="text" id="aud_fichier" required placeholder="https://... ou audio/fichier.mp3">
+            <small>URL directe vers le fichier MP3 ou chemin local</small>
+          </div>
+          <div class="form-group">
+            <label for="aud_categorie">Catégorie *</label>
+            <select id="aud_categorie" required>
+              <option value="Journal">Journal</option>
+              <option value="Interview">Interview</option>
+              <option value="Message">Message</option>
+              <option value="Émission">Émission</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="aud_date">Date *</label>
+            <input type="date" id="aud_date" required>
+          </div>
+          <div class="form-group">
+            <label for="aud_duree">Durée *</label>
+            <input type="text" id="aud_duree" required placeholder="15:30">
+          </div>
+          <div class="form-group">
+            <label for="aud_presentateur">Présentateur *</label>
+            <input type="text" id="aud_presentateur" required>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Ajouter l'émission
+          </button>
+          <div class="loading" id="loadingAudio"><i class="fas fa-spinner"></i> Envoi en cours...</div>
+          <div class="success-message" id="successAudio"></div>
+          <div class="error-message" id="errorAudio"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE ANNONCE (NOUVEAU !) -->
+    <div class="form-section" id="sectionAnnonce">
+      <div class="admin-section">
+        <h2><i class="fas fa-bullhorn"></i> Ajouter une annonce</h2>
+        <form id="formAnnonce">
+          <div class="form-group">
+            <label for="ann_titre">Titre de l'annonce *</label>
+            <input type="text" id="ann_titre" required placeholder="Ex: Boutique Mama">
+          </div>
+          <div class="form-group">
+            <label for="ann_description">Description *</label>
+            <textarea id="ann_description" required placeholder="Décrivez les produits/services..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ann_categorie">Catégorie *</label>
+            <select id="ann_categorie" required>
+              <option value="Commerce">Commerce</option>
+              <option value="Événement">Événement</option>
+              <option value="Service">Service</option>
+              <option value="Emploi">Emploi</option>
+              <option value="Immobilier">Immobilier</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ann_commercant">Nom du commerçant/entreprise *</label>
+            <input type="text" id="ann_commercant" required placeholder="Ex: Mama Kossi">
+          </div>
+          <div class="form-group">
+            <label for="ann_telephone">Téléphone</label>
+            <input type="tel" id="ann_telephone" placeholder="+228 90 00 00 00">
+          </div>
+          <div class="form-group">
+            <label for="ann_email">Email</label>
+            <input type="email" id="ann_email" placeholder="contact@exemple.com">
+          </div>
+          <div class="form-group">
+            <label for="ann_image">URL de l'image (optionnel)</label>
+            <input type="text" id="ann_image" placeholder="Laisser vide pour l'instant">
+            <small>Tu peux laisser vide et ajouter l'image plus tard</small>
+          </div>
+          <div class="form-group">
+            <label for="ann_lien">Lien (site web, Facebook, etc.)</label>
+            <input type="text" id="ann_lien" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="ann_date_expiration">Date d'expiration *</label>
+            <input type="date" id="ann_date_expiration" required>
+            <small>L'annonce disparaîtra automatiquement après cette date</small>
+          </div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Ajouter l'annonce
+          </button>
+          <div class="loading" id="loadingAnnonce"><i class="fas fa-spinner"></i> Envoi en cours...</div>
+          <div class="success-message" id="successAnnonce"></div>
+          <div class="error-message" id="errorAnnonce"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- LIEN VERS LE GOOGLE SHEET -->
+    <div class="admin-section">
+      <h2><i class="fas fa-table"></i> Voir les données dans Google Sheet</h2>
+      <p>Clique pour voir toutes les données ajoutées :</p>
+      <a href="https://docs.google.com/spreadsheets/d/1JF-RSd-JpCFdF3kk1i4DZA4OwsWkj6bY-tdk_V_7eNA/edit" target="_blank" class="btn btn-primary" style="margin-top: 15px;">
+        <i class="fas fa-external-link-alt"></i> Ouvrir le Google Sheet
+      </a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Noépé Media</h3>
+        <p>Panneau d'administration automatique</p>
+      </div>
+      <div class="footer-section">
+        <h3>Liens rapides</h3>
+        <a href="index.html">Voir le site</a>
+        <a href="actualites.html">Actualités</a>
+        <a href="tv.html">TV</a>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <p><i class="fas fa-envelope"></i> culturefusion360@gmail.com</p>
+        <p><i class="fas fa-phone"></i> +228 92 59 78 79</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Canton de Noépé Media — Tous droits réservés</p>
+    </div>
+  </footer>
+
+  <script>
+    // URL de ton Google Apps Script
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzTe6gzOex3lrP2dujp0a3w8bcLnTw4-mq6Vf3E8SRhp9Mne6yCzVO6P7ZnJ_M2VKPlHA/exec';
+
+    // Afficher le formulaire sélectionné
+    function afficherFormulaire(type, btn) {
+      document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('section' + type).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // Envoyer les données au Google Sheet
+    async function sendDataToSheet(sheetName, data) {
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sheet: sheetName,
+            data: data
+          })
+        });
+        
+        return { success: true, message: 'Données envoyées' };
+      } catch (error) {
+        console.error('Erreur:', error);
+        return { success: false, message: 'Erreur de connexion: ' + error.message };
+      }
+    }
+
+    function showLoading(id) {
+      document.getElementById('loading' + id).style.display = 'block';
+      document.querySelector('#form' + id + ' .btn-submit').disabled = true;
+    }
+
+    function hideLoading(id) {
+      document.getElementById('loading' + id).style.display = 'none';
+      document.querySelector('#form' + id + ' .btn-submit').disabled = false;
+    }
+
+    function showMessage(id, type, message) {
+      const successEl = document.getElementById('success' + id);
+      const errorEl = document.getElementById('error' + id);
+      
+      if (type === 'success') {
+        successEl.textContent = message;
+        successEl.style.display = 'block';
+        errorEl.style.display = 'none';
+      } else {
+        errorEl.textContent = message;
+        errorEl.style.display = 'block';
+        successEl.style.display = 'none';
+      }
+      
+      setTimeout(() => {
+        successEl.style.display = 'none';
+        errorEl.style.display = 'none';
+      }, 10000);
+    }
+
+    // Formulaire Actualité
+    document.getElementById('formActualite').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      showLoading('Actualite');
+      
+      const data = {
+        id: Date.now(),
+        titre: document.getElementById('act_titre').value,
+        categorie: document.getElementById('act_categorie').value,
+        date: document.getElementById('act_date').value,
+        resume: document.getElementById('act_resume').value,
+        contenu: document.getElementById('act_contenu').value,
+        image: document.getElementById('act_image').value || '',
+        lien: document.getElementById('act_lien').value || '#'
+      };
+      
+      const result = await sendDataToSheet('Actualités', data);
+      
+      if (result.success) {
+        showMessage('Actualite', 'success', '✅ Actualité ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
+        this.reset();
+      } else {
+        showMessage('Actualite', 'error', '❌ Erreur: ' + result.message);
+      }
+      
+      hideLoading('Actualite');
+    });
+
+    // Formulaire Vidéo
+    document.getElementById('formVideo').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      showLoading('Video');
+      
+      const data = {
+        id: Date.now(),
+        titre: document.getElementById('vid_titre').value,
+        description: document.getElementById('vid_description').value,
+        youtube_id: document.getElementById('vid_youtube_id').value,
+        video_id: document.getElementById('vid_youtube_id').value,
+        plateforme: document.getElementById('vid_plateforme').value,
+        categorie: document.getElementById('vid_categorie').value,
+        date: document.getElementById('vid_date').value,
+        duree: document.getElementById('vid_duree').value,
+        vues: parseInt(document.getElementById('vid_vues').value) || 0,
+        miniature: ''
+      };
+      
+      const result = await sendDataToSheet('Vidéos', data);
+      
+      if (result.success) {
+        showMessage('Video', 'success', '✅ Vidéo ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
+        this.reset();
+      } else {
+        showMessage('Video', 'error', '❌ Erreur: ' + result.message);
+      }
+      
+      hideLoading('Video');
+    });
+
+    // Formulaire Audio
+    document.getElementById('formAudio').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      showLoading('Audio');
+      
+      const data = {
+        id: Date.now(),
+        titre: document.getElementById('aud_titre').value,
+        description: document.getElementById('aud_description').value,
+        fichier: document.getElementById('aud_fichier').value,
+        categorie: document.getElementById('aud_categorie').value,
+        date: document.getElementById('aud_date').value,
+        duree: document.getElementById('aud_duree').value,
+        presentateur: document.getElementById('aud_presentateur').value,
+        couverture: ''
+      };
+      
+      const result = await sendDataToSheet('Audio', data);
+      
+      if (result.success) {
+        showMessage('Audio', 'success', '✅ Émission ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
+        this.reset();
+      } else {
+        showMessage('Audio', 'error', '❌ Erreur: ' + result.message);
+      }
+      
+      hideLoading('Audio');
+    });
+
+    // Formulaire Annonce (NOUVEAU !)
+    document.getElementById('formAnnonce').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      showLoading('Annonce');
+      
+      const data = {
+        id: Date.now(),
+        titre: document.getElementById('ann_titre').value,
+        description: document.getElementById('ann_description').value,
+        categorie: document.getElementById('ann_categorie').value,
+        commercant: document.getElementById('ann_commercant').value,
+        telephone: document.getElementById('ann_telephone').value,
+        email: document.getElementById('ann_email').value,
+        image: document.getElementById('ann_image').value || '',
+        lien: document.getElementById('ann_lien').value || '',
+        date_expiration: document.getElementById('ann_date_expiration').value
+      };
+      
+      const result = await sendDataToSheet('Annonces', data);
+      
+      if (result.success) {
+        showMessage('Annonce', 'success', '✅ Annonce ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
+        this.reset();
+      } else {
+        showMessage('Annonce', 'error', '❌ Erreur: ' + result.message);
+      }
+      
+      hideLoading('Annonce');
+    });
+
+    // Mettre à jour le placeholder selon la plateforme
+    function mettreAJourPlaceholder() {
+      const plateforme = document.getElementById('vid_plateforme').value;
+      const inputId = document.getElementById('vid_youtube_id');
+      const aideId = document.getElementById('aide_id');
+      
+      if (plateforme === 'TikTok') {
+        inputId.placeholder = 'Ex: 7499948877798280503';
+        aideId.innerHTML = '<strong>TikTok :</strong> L\'ID est dans l\'URL après /video/<br>Ex: https://www.tiktok.com/@user/video/<strong>7499948877798280503</strong>';
+      } else {
+        inputId.placeholder = 'Ex: dQw4w9WgXcQ';
+        aideId.innerHTML = '<strong>YouTube :</strong> L\'ID est après "v=" dans l\'URL<br>Ex: https://www.youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong>';
+      }
+    }
+
+    // Vérifier que l'API est accessible
+    async function verifierAPI() {
+      try {
+        const response = await fetch(API_URL);
+        const status = document.getElementById('apiStatus');
+        if (response.ok) {
+          status.className = 'api-status connected';
+          status.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i><div><strong>API Google Sheets connectée</strong><p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Les données seront ajoutées automatiquement</p></div>';
+        }
+      } catch (error) {
+        console.log('Vérification API:', error);
+      }
+    }
+
+    // Vérifier au chargement
+    verifierAPI();
+  </script>
+
+</body>
+</html>

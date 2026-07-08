@@ -381,7 +381,6 @@ footer {
   transition: gap 0.3s;
 }
 .read-more:hover { gap: 10px; }
-
 /* ============================================
    CARTES - VIDÉOS TV
    ============================================ */
@@ -392,6 +391,19 @@ footer {
   border-radius: var(--radius);
   overflow: hidden;
   margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Ratio 16:9 pour vidéo HD */
+  height: 0;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .video-info {
@@ -461,10 +473,10 @@ footer {
   opacity: 0.8;
 }
 
-.video-duration {
+.video-duration,
+.video-platform {
   position: absolute;
   bottom: 10px;
-  right: 10px;
   background: rgba(0,0,0,0.8);
   color: var(--white);
   padding: 5px 10px;
@@ -472,6 +484,14 @@ footer {
   font-size: 0.85rem;
   font-weight: 600;
   z-index: 2;
+}
+
+.video-duration {
+  right: 10px;
+}
+
+.video-platform {
+  left: 10px;
 }
 
 .video-card-content { padding: 20px; }
@@ -921,4 +941,120 @@ footer {
   .cta-buttons {
     flex-direction: column;
   }
+}
+
+/* ============================================
+   INDICATEUR DE PLATEFORME VIDÉO
+   ============================================ */
+.video-platform {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.7);
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.social-links a.tiktok:hover {
+  background: #000000;
+}
+
+.share-btn.tiktok {
+  background: #000000;
+}
+
+/* ============================================
+   CARTES - ANNONCES (VERSION AMÉLIORÉE)
+   ============================================ */
+.ad-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  border-left: 4px solid var(--secondary);
+}
+
+.ad-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.ad-image {
+  background: linear-gradient(135deg, var(--secondary), #fbbf24);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ad-image.has-image i {
+  display: none;
+}
+
+.ad-category {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--primary);
+  color: var(--white);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ad-content {
+  padding: 20px;
+}
+
+.ad-content h4 {
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.ad-commercant {
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ad-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.ad-contact span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.ad-contact i {
+  color: var(--primary);
+  width: 20px;
 }

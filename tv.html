@@ -5,29 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noépé TV - Canton de Noépé Media</title>
   
-  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:title" content="Noépé TV - Vidéos du Canton">
-  <meta property="og:description" content="Regardez nos reportages, interviews et événements en vidéo. La chaîne officielle du Canton de Noépé.">
+  <meta property="og:description" content="Regardez nos reportages, interviews et événements en vidéo.">
   <meta property="og:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   <meta property="og:url" content="https://mario12185.github.io/noepe-media/tv.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Noépé TV - Vidéos du Canton">
   <meta name="twitter:description" content="Regardez nos reportages, interviews et événements en vidéo">
   <meta name="twitter:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   
-  <!-- Description SEO -->
-  <meta name="description" content="Noépé TV : la chaîne officielle du Canton de Noépé. Reportages, interviews, événements et messages officiels en vidéo.">
+  <meta name="description" content="Noépé TV : la chaîne officielle du Canton de Noépé.">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="google-sheets.js"></script>
 </head>
 
 <body>
@@ -61,25 +57,17 @@
 
   <!-- VIDÉO EN VEDETTE -->
   <section class="featured-video" id="videoFeatured">
+    <p style="text-align:center; padding: 40px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><br>
+      Chargement des vidéos...
+    </p>
   </section>
 
   <!-- CATÉGORIES -->
   <section class="categories-section">
-    <div class="category-tabs">
+    <div class="category-tabs" id="categoryTabs">
       <button class="category-tab active" onclick="filtrerVideos('Toutes')">
         <i class="fas fa-th"></i> Toutes
-      </button>
-      <button class="category-tab" onclick="filtrerVideos('Reportages')">
-        <i class="fas fa-video"></i> Reportages
-      </button>
-      <button class="category-tab" onclick="filtrerVideos('Interviews')">
-        <i class="fas fa-microphone"></i> Interviews
-      </button>
-      <button class="category-tab" onclick="filtrerVideos('Événements')">
-        <i class="fas fa-calendar-alt"></i> Événements
-      </button>
-      <button class="category-tab" onclick="filtrerVideos('Officiel')">
-        <i class="fas fa-bullhorn"></i> Messages officiels
       </button>
     </div>
   </section>
@@ -97,21 +85,12 @@
         <h3>Noépé Media</h3>
         <p>La plateforme d'information officielle du Canton de Noépé</p>
         <div class="social-links">
-          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="https://facebook.com/noepemedia" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/22892597879" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://youtube.com/@noepemedia" target="_blank" class="youtube"><i class="fab fa-youtube"></i></a>
+          <a href="https://tiktok.com/@noepemedia" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
+          <a href="https://twitter.com/noepemedia" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/noepemedia" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
       <div class="footer-section">
@@ -136,44 +115,140 @@
   </footer>
 
   <!-- BOUTON WHATSAPP FLOTTANT -->
-  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float" title="Contactez-nous sur WhatsApp">
+  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
   </a>
 
   <!-- SCRIPT -->
   <script>
     let toutesLesVideos = [];
+    let categoriesVideos = new Set();
 
-    fetch('data/videos.json')
-      .then(response => response.json())
-      .then(data => {
-        toutesLesVideos = data.videos;
-        if (toutesLesVideos.length > 0) {
-          afficherVideoFeatured(toutesLesVideos[0]);
+    // Fonction pour générer l'embed selon la plateforme
+    function genererEmbed(video) {
+      const plateforme = video.plateforme || 'YouTube';
+      const videoId = video.youtube_id || video.video_id;
+      
+      if (plateforme === 'TikTok') {
+        return `<iframe src="https://www.tiktok.com/embed/v2/${videoId}" allow="encrypted-media;" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>`;
+      } else {
+        // YouTube par défaut
+        return `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+      }
+    }
+
+    // Fonction pour obtenir l'icône de la plateforme
+    function getIconePlateforme(plateforme) {
+      if (plateforme === 'TikTok') {
+        return '<i class="fab fa-tiktok"></i>';
+      }
+      return '<i class="fab fa-youtube"></i>';
+    }
+
+    // CHARGER LES VIDÉOS DEPUIS GOOGLE SHEETS
+    async function chargerVideos() {
+      try {
+        const videos = await loadVideosFromSheet();
+        
+        if (videos && videos.length > 0) {
+          console.log('✅ Vidéos chargées depuis Google Sheets:', videos.length);
+          toutesLesVideos = videos.map(v => ({
+            id: v.id || Date.now(),
+            titre: v.titre || 'Sans titre',
+            description: v.description || '',
+            youtube_id: v.youtube_id || v.video_id || '',
+            video_id: v.video_id || v.youtube_id || '',
+            plateforme: v.plateforme || 'YouTube',
+            miniature: v.miniature || '',
+            categorie: v.categorie || 'Reportages',
+            date: v.date || new Date().toISOString().split('T')[0],
+            duree: v.duree || '00:00',
+            vues: parseInt(v.vues) || 0
+          }));
+          
+          genererCategoriesVideos();
+          if (toutesLesVideos.length > 0) {
+            afficherVideoFeatured(toutesLesVideos[0]);
+          }
+          afficherVideos(toutesLesVideos);
+        } else {
+          console.log('ℹ️ Google Sheets vide, chargement depuis fichier local...');
+          chargerVideosDepuisJSON();
         }
-        afficherVideos(toutesLesVideos);
-      })
-      .catch(error => console.error('Erreur:', error));
+      } catch (error) {
+        console.error('❌ Erreur, chargement depuis fichier local:', error);
+        chargerVideosDepuisJSON();
+      }
+    }
+
+    function chargerVideosDepuisJSON() {
+      fetch('data/videos.json')
+        .then(response => response.json())
+        .then(data => {
+          toutesLesVideos = data.videos.map(v => ({
+            ...v,
+            plateforme: v.plateforme || 'YouTube',
+            video_id: v.video_id || v.youtube_id
+          }));
+          genererCategoriesVideos();
+          if (toutesLesVideos.length > 0) {
+            afficherVideoFeatured(toutesLesVideos[0]);
+          }
+          afficherVideos(toutesLesVideos);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          document.getElementById('videosContainer').innerHTML = 
+            '<p style="text-align:center; grid-column: 1/-1;">Impossible de charger les vidéos</p>';
+        });
+    }
+
+    function genererCategoriesVideos() {
+      categoriesVideos.clear();
+      categoriesVideos.add('Reportages');
+      categoriesVideos.add('Interviews');
+      categoriesVideos.add('Événements');
+      categoriesVideos.add('Officiel');
+      
+      toutesLesVideos.forEach(v => {
+        if (v.categorie) categoriesVideos.add(v.categorie);
+      });
+      
+      const tabs = document.getElementById('categoryTabs');
+      let html = '<button class="category-tab active" onclick="filtrerVideos(\'Toutes\')"><i class="fas fa-th"></i> Toutes</button>';
+      
+      const icones = {
+        'Reportages': 'fa-video',
+        'Interviews': 'fa-microphone',
+        'Événements': 'fa-calendar-alt',
+        'Officiel': 'fa-bullhorn'
+      };
+      
+      categoriesVideos.forEach(cat => {
+        const icone = icones[cat] || 'fa-video';
+        html += `<button class="category-tab" onclick="filtrerVideos('${cat}')"><i class="fas ${icone}"></i> ${cat}</button>`;
+      });
+      tabs.innerHTML = html;
+    }
 
     function afficherVideoFeatured(video) {
       const featured = document.getElementById('videoFeatured');
       const dateFormatee = new Date(video.date).toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
+        day: '2-digit', month: 'long', year: 'numeric'
       });
 
       featured.innerHTML = `
         <div class="video-container">
-          <iframe width="100%" height="500" src="https://www.youtube.com/embed/${video.youtube_id}" frameborder="0" allowfullscreen></iframe>
+          ${genererEmbed(video)}
         </div>
         <div class="video-info">
-          <h3>${video.titre}</h3>
+          <h3>${getIconePlateforme(video.plateforme)} ${video.titre}</h3>
           <p>${video.description}</p>
           <div class="video-meta">
             <span><i class="far fa-calendar"></i> ${dateFormatee}</span>
             <span><i class="far fa-eye"></i> ${video.vues.toLocaleString()} vues</span>
             <span><i class="fas fa-tag"></i> ${video.categorie}</span>
+            <span>${getIconePlateforme(video.plateforme)} ${video.plateforme}</span>
           </div>
         </div>
       `;
@@ -190,17 +265,14 @@
 
       videos.forEach(video => {
         const dateFormatee = new Date(video.date).toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
+          day: '2-digit', month: 'short', year: 'numeric'
         });
 
-        // Gestion de la miniature
         const hasMiniature = video.miniature && video.miniature !== '';
         const miniatureContent = hasMiniature 
           ? `<img src="${video.miniature}" alt="${video.titre}" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback-icon').style.display='flex';">
              <i class="fas fa-play-circle fallback-icon" style="display:none;"></i>`
-          : '<i class="fas fa-play-circle fallback-icon"></i>';
+          : `<i class="fas fa-play-circle fallback-icon"></i>`;
 
         const videoData = encodeURIComponent(JSON.stringify(video));
         
@@ -208,6 +280,7 @@
           <div class="video-card" onclick='afficherVideoFeatured(JSON.parse(decodeURIComponent("${videoData}"))); window.scrollTo(0, 0);'>
             <div class="video-thumbnail ${hasMiniature ? 'has-image' : ''}">
               ${miniatureContent}
+              <span class="video-platform">${getIconePlateforme(video.plateforme)}</span>
               <span class="video-duration">${video.duree}</span>
             </div>
             <div class="video-card-content">
@@ -237,6 +310,8 @@
         afficherVideos(videosFiltrees);
       }
     }
+
+    chargerVideos();
   </script>
 
 </body>

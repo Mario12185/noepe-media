@@ -5,29 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noépé FM - Canton de Noépé Media</title>
   
-  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:title" content="Noépé FM - Radio du Canton">
-  <meta property="og:description" content="Écoutez nos émissions, interviews et messages publics. La radio officielle du Canton de Noépé.">
+  <meta property="og:description" content="Écoutez nos émissions, interviews et messages publics.">
   <meta property="og:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   <meta property="og:url" content="https://mario12185.github.io/noepe-media/fm.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Noépé FM - Radio du Canton">
   <meta name="twitter:description" content="Écoutez nos émissions, interviews et messages publics">
   <meta name="twitter:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   
-  <!-- Description SEO -->
-  <meta name="description" content="Noépé FM : la radio officielle du Canton de Noépé. Émissions, journaux, interviews et messages publics en audio.">
+  <meta name="description" content="Noépé FM : la radio officielle du Canton de Noépé.">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SCRIPT GOOGLE SHEETS -->
+  <script src="google-sheets.js"></script>
 </head>
 
 <body>
@@ -61,25 +58,17 @@
 
   <!-- LECTEUR PRINCIPAL -->
   <section class="main-player" id="playerPrincipal">
+    <p style="text-align:center; padding: 40px; color: var(--primary);">
+      <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i><br>
+      Chargement des émissions...
+    </p>
   </section>
 
   <!-- CATÉGORIES -->
   <section class="categories-section">
-    <div class="category-tabs">
+    <div class="category-tabs" id="categoryTabsFM">
       <button class="category-tab active" onclick="filtrerEmissions('Toutes')">
         <i class="fas fa-th"></i> Toutes
-      </button>
-      <button class="category-tab" onclick="filtrerEmissions('Journal')">
-        <i class="fas fa-newspaper"></i> Journaux
-      </button>
-      <button class="category-tab" onclick="filtrerEmissions('Interview')">
-        <i class="fas fa-microphone"></i> Interviews
-      </button>
-      <button class="category-tab" onclick="filtrerEmissions('Message')">
-        <i class="fas fa-bullhorn"></i> Messages
-      </button>
-      <button class="category-tab" onclick="filtrerEmissions('Émission')">
-        <i class="fas fa-music"></i> Émissions
       </button>
     </div>
   </section>
@@ -97,21 +86,11 @@
         <h3>Noépé Media</h3>
         <p>La plateforme d'information officielle du Canton de Noépé</p>
         <div class="social-links">
-          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="https://facebook.com/noepemedia" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/22892597879" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://youtube.com/@noepemedia" target="_blank" class="youtube"><i class="fab fa-youtube"></i></a>
+          <a href="https://twitter.com/noepemedia" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/noepemedia" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
       <div class="footer-section">
@@ -136,34 +115,101 @@
   </footer>
 
   <!-- BOUTON WHATSAPP FLOTTANT -->
-  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float" title="Contactez-nous sur WhatsApp">
+  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
   </a>
 
   <!-- SCRIPT -->
   <script>
     let toutesLesEmissions = [];
+    let categoriesAudio = new Set();
 
-    fetch('data/audio.json')
-      .then(response => response.json())
-      .then(data => {
-        toutesLesEmissions = data.emissions;
-        if (toutesLesEmissions.length > 0) {
-          afficherPlayerPrincipal(toutesLesEmissions[0]);
+    // CHARGER LES ÉMISSIONS DEPUIS GOOGLE SHEETS
+    async function chargerEmissions() {
+      try {
+        const emissions = await loadAudioFromSheet();
+        
+        if (emissions && emissions.length > 0) {
+          console.log('✅ Émissions chargées depuis Google Sheets:', emissions.length);
+          toutesLesEmissions = emissions.map(e => ({
+            id: e.id || Date.now(),
+            titre: e.titre || 'Sans titre',
+            description: e.description || '',
+            fichier: e.fichier || '',
+            couverture: e.couverture || '',
+            duree: e.duree || '00:00',
+            date: e.date || new Date().toISOString().split('T')[0],
+            categorie: e.categorie || 'Journal',
+            presentateur: e.presentateur || 'Inconnu'
+          }));
+          
+          genererCategoriesAudio();
+          if (toutesLesEmissions.length > 0) {
+            afficherPlayerPrincipal(toutesLesEmissions[0]);
+          }
+          afficherEmissions(toutesLesEmissions);
+        } else {
+          console.log('ℹ️ Google Sheets vide, chargement depuis fichier local...');
+          chargerEmissionsDepuisJSON();
         }
-        afficherEmissions(toutesLesEmissions);
-      })
-      .catch(error => console.error('Erreur:', error));
+      } catch (error) {
+        console.error('❌ Erreur, chargement depuis fichier local:', error);
+        chargerEmissionsDepuisJSON();
+      }
+    }
+
+    function chargerEmissionsDepuisJSON() {
+      fetch('data/audio.json')
+        .then(response => response.json())
+        .then(data => {
+          toutesLesEmissions = data.emissions;
+          genererCategoriesAudio();
+          if (toutesLesEmissions.length > 0) {
+            afficherPlayerPrincipal(toutesLesEmissions[0]);
+          }
+          afficherEmissions(toutesLesEmissions);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          document.getElementById('emissionsContainer').innerHTML = 
+            '<p style="text-align:center;">Impossible de charger les émissions</p>';
+        });
+    }
+
+    function genererCategoriesAudio() {
+      categoriesAudio.clear();
+      categoriesAudio.add('Journal');
+      categoriesAudio.add('Interview');
+      categoriesAudio.add('Message');
+      categoriesAudio.add('Émission');
+      
+      toutesLesEmissions.forEach(e => {
+        if (e.categorie) categoriesAudio.add(e.categorie);
+      });
+      
+      const tabs = document.getElementById('categoryTabsFM');
+      let html = '<button class="category-tab active" onclick="filtrerEmissions(\'Toutes\')"><i class="fas fa-th"></i> Toutes</button>';
+      
+      const icones = {
+        'Journal': 'fa-newspaper',
+        'Interview': 'fa-microphone',
+        'Message': 'fa-bullhorn',
+        'Émission': 'fa-music'
+      };
+      
+      categoriesAudio.forEach(cat => {
+        const icone = icones[cat] || 'fa-music';
+        html += `<button class="category-tab" onclick="filtrerEmissions('${cat}')"><i class="fas ${icone}"></i> ${cat}</button>`;
+      });
+      tabs.innerHTML = html;
+    }
 
     function afficherPlayerPrincipal(emission) {
       const player = document.getElementById('playerPrincipal');
       const dateFormatee = new Date(emission.date).toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
+        day: '2-digit', month: 'long', year: 'numeric'
       });
 
-      // Gestion de la couverture
       const hasCouverture = emission.couverture && emission.couverture !== '';
       const couvertureContent = hasCouverture
         ? `<img src="${emission.couverture}" alt="${emission.titre}" class="player-cover" onerror="this.style.display='none'; this.parentElement.querySelector('.player-icon').style.display='block';">
@@ -184,18 +230,9 @@
             </audio>
           </div>
           <div class="player-info">
-            <div class="info-item">
-              <i class="far fa-clock"></i>
-              <span>Durée : ${emission.duree}</span>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-user"></i>
-              <span>Présentateur : ${emission.presentateur}</span>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-tag"></i>
-              <span>Catégorie : ${emission.categorie}</span>
-            </div>
+            <div class="info-item"><i class="far fa-clock"></i><span>Durée : ${emission.duree}</span></div>
+            <div class="info-item"><i class="fas fa-user"></i><span>Présentateur : ${emission.presentateur}</span></div>
+            <div class="info-item"><i class="fas fa-tag"></i><span>Catégorie : ${emission.categorie}</span></div>
           </div>
         </div>
       `;
@@ -212,12 +249,9 @@
 
       emissions.forEach(emission => {
         const dateFormatee = new Date(emission.date).toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
+          day: '2-digit', month: 'short', year: 'numeric'
         });
 
-        // Gestion de la couverture
         const hasCouverture = emission.couverture && emission.couverture !== '';
         const couvertureContent = hasCouverture
           ? `<img src="${emission.couverture}" alt="${emission.titre}" onerror="this.style.display='none'; this.parentElement.querySelector('.audio-fallback-icon').style.display='flex';">
@@ -262,6 +296,8 @@
         afficherEmissions(emissionsFiltrees);
       }
     }
+
+    chargerEmissions();
   </script>
 
 </body>

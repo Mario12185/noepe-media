@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Actualités - Canton de Noépé Media</title>
   
-  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL (Open Graph) -->
+  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL -->
   <meta property="og:title" content="Actualités - Noépé Media">
   <meta property="og:description" content="Toutes les informations officielles et communautaires du Canton de Noépé">
   <meta property="og:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
@@ -13,21 +13,19 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Actualités - Noépé Media">
   <meta name="twitter:description" content="Toutes les informations officielles et communautaires du Canton de Noépé">
   <meta name="twitter:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   
-  <!-- Description SEO -->
-  <meta name="description" content="Actualités officielles et communautaires du Canton de Noépé. Restez informé sur les projets, événements et décisions du canton.">
+  <meta name="description" content="Actualités officielles et communautaires du Canton de Noépé.">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SCRIPT GOOGLE SHEETS -->
+  <script src="google-sheets.js"></script>
 </head>
 
 <body>
@@ -66,7 +64,7 @@
         <i class="fas fa-search"></i>
         <input type="text" id="searchInput" placeholder="Rechercher un article..." onkeyup="filtrerActualites()">
       </div>
-      <div class="filter-buttons">
+      <div class="filter-buttons" id="filterButtons">
         <button class="filter-btn active" onclick="filtrerParCategorie('Tous')">Tous</button>
         <button class="filter-btn" onclick="filtrerParCategorie('Officiel')">Officiel</button>
         <button class="filter-btn" onclick="filtrerParCategorie('Communautaire')">Communautaire</button>
@@ -79,7 +77,10 @@
   <!-- LISTE DES ACTUALITÉS -->
   <section class="news-list">
     <div class="news-grid" id="actualitesContainer">
-      <!-- Les actualités seront chargées ici dynamiquement -->
+      <p style="text-align:center; grid-column: 1/-1; padding: 40px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><br>
+        Chargement des actualités depuis Google Sheets...
+      </p>
     </div>
   </section>
 
@@ -90,21 +91,11 @@
         <h3>Noépé Media</h3>
         <p>La plateforme d'information officielle du Canton de Noépé</p>
         <div class="social-links">
-          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube"><i class="fab fa-youtube"></i></a>
+          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
       <div class="footer-section">
@@ -133,18 +124,76 @@
     <i class="fab fa-whatsapp"></i>
   </a>
 
-  <!-- SCRIPT POUR CHARGER LES ACTUALITÉS -->
+  <!-- SCRIPT -->
   <script>
     let toutesLesActualites = [];
+    let categoriesActives = new Set();
 
-    fetch('data/actualites.json')
-      .then(response => response.json())
-      .then(data => {
-        toutesLesActualites = data.actualites;
-        afficherActualites(toutesLesActualites);
-      })
-      .catch(error => console.error('Erreur:', error));
+    // CHARGER LES ACTUALITÉS DEPUIS GOOGLE SHEETS
+    async function chargerActualites() {
+      try {
+        // Essayer d'abord depuis Google Sheets
+        const actualites = await loadActualitesFromSheet();
+        
+        if (actualites && actualites.length > 0) {
+          console.log('✅ Actualités chargées depuis Google Sheets:', actualites.length);
+          toutesLesActualites = actualites.map(a => ({
+            id: a.id || Date.now(),
+            titre: a.titre || 'Sans titre',
+            categorie: a.categorie || 'Officiel',
+            date: a.date || new Date().toISOString().split('T')[0],
+            resume: a.resume || '',
+            contenu: a.contenu || '',
+            image: a.image || '',
+            lien: a.lien || '#'
+          }));
+          
+          // Générer les filtres dynamiquement
+          genererFiltres();
+          afficherActualites(toutesLesActualites);
+        } else {
+          // Si Google Sheets est vide, charger depuis le fichier JSON local
+          console.log('ℹ️ Google Sheets vide, chargement depuis fichier local...');
+          chargerDepuisJSON();
+        }
+      } catch (error) {
+        console.error('❌ Erreur Google Sheets, chargement depuis fichier local:', error);
+        chargerDepuisJSON();
+      }
+    }
 
+    // Fonction de secours : charger depuis le fichier JSON local
+    function chargerDepuisJSON() {
+      fetch('data/actualites.json')
+        .then(response => response.json())
+        .then(data => {
+          toutesLesActualites = data.actualites;
+          genererFiltres();
+          afficherActualites(toutesLesActualites);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          document.getElementById('actualitesContainer').innerHTML = 
+            '<p style="text-align:center; grid-column: 1/-1;">Impossible de charger les actualités</p>';
+        });
+    }
+
+    // Générer les boutons de filtres dynamiquement
+    function genererFiltres() {
+      categoriesActives.clear();
+      toutesLesActualites.forEach(a => {
+        if (a.categorie) categoriesActives.add(a.categorie);
+      });
+      
+      const filterButtons = document.getElementById('filterButtons');
+      let html = '<button class="filter-btn active" onclick="filtrerParCategorie(\'Tous\')">Tous</button>';
+      categoriesActives.forEach(cat => {
+        html += `<button class="filter-btn" onclick="filtrerParCategorie('${cat}')">${cat}</button>`;
+      });
+      filterButtons.innerHTML = html;
+    }
+
+    // Afficher les actualités
     function afficherActualites(actualites) {
       const container = document.getElementById('actualitesContainer');
       container.innerHTML = '';
@@ -161,7 +210,6 @@
           year: 'numeric'
         });
 
-        // Vérifier si une image existe
         const hasImage = actualite.image && actualite.image !== '';
         const imageClass = hasImage ? 'has-image' : '';
         
@@ -169,7 +217,6 @@
           ? `<img src="${actualite.image}" alt="${actualite.titre}" onerror="this.style.display='none'; this.parentElement.querySelector('i').style.display='block';">`
           : '<i class="fas fa-image"></i>';
 
-        // URL de partage
         const shareUrl = encodeURIComponent(window.location.href);
         const shareTitle = encodeURIComponent(actualite.titre);
         const shareText = encodeURIComponent(actualite.resume);
@@ -187,21 +234,12 @@
               <p>${actualite.resume}</p>
               <a href="${actualite.lien}" class="read-more">Lire la suite <i class="fas fa-arrow-right"></i></a>
               
-              <!-- BOUTONS DE PARTAGE -->
               <div class="share-buttons">
                 <span class="share-label">Partager :</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="share-btn facebook" title="Partager sur Facebook">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://wa.me/?text=${shareTitle}%20${shareUrl}" target="_blank" class="share-btn whatsapp" title="Partager sur WhatsApp">
-                  <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="share-btn twitter" title="Partager sur Twitter">
-                  <i class="fab fa-twitter"></i>
-                </a>
-                <a href="mailto:?subject=${shareTitle}&body=${shareText}%20${shareUrl}" class="share-btn email" title="Partager par email">
-                  <i class="fas fa-envelope"></i>
-                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="share-btn facebook" title="Partager sur Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://wa.me/?text=${shareTitle}%20${shareUrl}" target="_blank" class="share-btn whatsapp" title="Partager sur WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="share-btn twitter" title="Partager sur Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="mailto:?subject=${shareTitle}&body=${shareText}%20${shareUrl}" class="share-btn email" title="Partager par email"><i class="fas fa-envelope"></i></a>
               </div>
             </div>
           </article>
@@ -210,6 +248,7 @@
       });
     }
 
+    // Filtrer par catégorie
     function filtrerParCategorie(categorie) {
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -226,6 +265,7 @@
       }
     }
 
+    // Recherche
     function filtrerActualites() {
       const recherche = document.getElementById('searchInput').value.toLowerCase();
       const actualitesFiltrees = toutesLesActualites.filter(a => 
@@ -234,6 +274,9 @@
       );
       afficherActualites(actualitesFiltrees);
     }
+
+    // Démarrer le chargement
+    chargerActualites();
   </script>
 
 </body>

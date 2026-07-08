@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Annonces - Canton de Noépé Media</title>
   
-  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:title" content="Annonces & Publicités - Noépé Media">
   <meta property="og:description" content="Espace d'annonces du Canton de Noépé : commerces locaux, événements et services des partenaires.">
   <meta property="og:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
@@ -13,21 +12,18 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Annonces & Publicités - Noépé Media">
   <meta name="twitter:description" content="Espace d'annonces du Canton de Noépé : commerces locaux, événements et services.">
   <meta name="twitter:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   
-  <!-- Description SEO -->
   <meta name="description" content="Annonces et publicités du Canton de Noépé : commerces locaux, événements communautaires et services des OSC partenaires.">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="google-sheets.js"></script>
 </head>
 
 <body>
@@ -59,40 +55,27 @@
     <p>Espace réservé aux partenaires du canton</p>
   </section>
 
-  <!-- SECTION ANNONCES -->
+  <!-- FILTRES -->
+  <section class="filters-section">
+    <div class="filters-container">
+      <div class="filter-buttons" id="filterButtonsAnnonces">
+        <button class="filter-btn active" onclick="filtrerParCategorieAnnonce('Toutes')">Toutes</button>
+        <button class="filter-btn" onclick="filtrerParCategorieAnnonce('Commerce')">Commerce</button>
+        <button class="filter-btn" onclick="filtrerParCategorieAnnonce('Événement')">Événements</button>
+        <button class="filter-btn" onclick="filtrerParCategorieAnnonce('Service')">Services</button>
+        <button class="filter-btn" onclick="filtrerParCategorieAnnonce('Emploi')">Emploi</button>
+        <button class="filter-btn" onclick="filtrerParCategorieAnnonce('Immobilier')">Immobilier</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTE DES ANNONCES -->
   <section class="ads-section">
-    <h2><i class="fas fa-bullhorn"></i> Nos espaces publicitaires</h2>
-    <div class="ads-grid">
-      <div class="ad-card">
-        <i class="fas fa-store"></i>
-        <h4>Commerce local</h4>
-        <p>Espace disponible pour les commerçants du canton</p>
-      </div>
-      <div class="ad-card">
-        <i class="fas fa-calendar-alt"></i>
-        <h4>Événements</h4>
-        <p>Annoncez vos événements communautaires</p>
-      </div>
-      <div class="ad-card">
-        <i class="fas fa-hands-helping"></i>
-        <h4>Services</h4>
-        <p>Offres de services des OSC et partenaires</p>
-      </div>
-      <div class="ad-card">
-        <i class="fas fa-briefcase"></i>
-        <h4>Offres d'emploi</h4>
-        <p>Publiez vos offres d'emploi locales</p>
-      </div>
-      <div class="ad-card">
-        <i class="fas fa-home"></i>
-        <h4>Immobilier</h4>
-        <p>Annonces immobilières du canton</p>
-      </div>
-      <div class="ad-card">
-        <i class="fas fa-handshake"></i>
-        <h4>Partenariats</h4>
-        <p>Propositions de collaboration</p>
-      </div>
+    <div class="ads-grid" id="annoncesContainer">
+      <p style="text-align:center; grid-column: 1/-1; padding: 40px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><br>
+        Chargement des annonces...
+      </p>
     </div>
     
     <!-- APPEL À L'ACTION -->
@@ -117,26 +100,15 @@
         <h3>Noépé Media</h3>
         <p>La plateforme d'information officielle du Canton de Noépé</p>
         <div class="social-links">
-          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="https://facebook.com/noepemedia" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/22892597879" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://youtube.com/@noepemedia" target="_blank" class="youtube"><i class="fab fa-youtube"></i></a>
+          <a href="https://twitter.com/noepemedia" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/noepemedia" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
       <div class="footer-section">
         <h3>Liens rapides</h3>
-        <a href="index.html">Accueil</a>
         <a href="actualites.html">Actualités</a>
         <a href="tv.html">TV</a>
         <a href="fm.html">FM</a>
@@ -156,9 +128,141 @@
   </footer>
 
   <!-- BOUTON WHATSAPP FLOTTANT -->
-  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float" title="Contactez-nous sur WhatsApp">
+  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
   </a>
+
+  <!-- SCRIPT -->
+  <script>
+    let toutesLesAnnonces = [];
+    let categoriesAnnonces = new Set();
+
+    // Charger les annonces depuis Google Sheets
+    async function chargerAnnonces() {
+      try {
+        const annonces = await fetchGoogleSheet('Annonces');
+        
+        if (annonces && annonces.length > 0) {
+          console.log('✅ Annonces chargées depuis Google Sheets:', annonces.length);
+          toutesLesAnnonces = annonces.map(a => ({
+            id: a.id || Date.now(),
+            titre: a.titre || 'Sans titre',
+            description: a.description || '',
+            categorie: a.categorie || 'Commerce',
+            commercant: a.commercant || '',
+            telephone: a.telephone || '',
+            email: a.email || '',
+            image: a.image || '',
+            lien: a.lien || '',
+            date_expiration: a.date_expiration || ''
+          }));
+          
+          // Filtrer les annonces expirées
+          const today = new Date().toISOString().split('T')[0];
+          toutesLesAnnonces = toutesLesAnnonces.filter(a => !a.date_expiration || a.date_expiration >= today);
+          
+          genererFiltresAnnonces();
+          afficherAnnonces(toutesLesAnnonces);
+        } else {
+          console.log('ℹ️ Aucune annonce dans Google Sheets');
+          document.getElementById('annoncesContainer').innerHTML = 
+            '<p style="text-align:center; grid-column: 1/-1;">Aucune annonce disponible pour le moment</p>';
+        }
+      } catch (error) {
+        console.error('❌ Erreur:', error);
+        document.getElementById('annoncesContainer').innerHTML = 
+          '<p style="text-align:center; grid-column: 1/-1;">Impossible de charger les annonces</p>';
+      }
+    }
+
+    function genererFiltresAnnonces() {
+      categoriesAnnonces.clear();
+      categoriesAnnonces.add('Commerce');
+      categoriesAnnonces.add('Événement');
+      categoriesAnnonces.add('Service');
+      categoriesAnnonces.add('Emploi');
+      categoriesAnnonces.add('Immobilier');
+      
+      toutesLesAnnonces.forEach(a => {
+        if (a.categorie) categoriesAnnonces.add(a.categorie);
+      });
+      
+      const filterButtons = document.getElementById('filterButtonsAnnonces');
+      let html = '<button class="filter-btn active" onclick="filtrerParCategorieAnnonce(\'Toutes\')">Toutes</button>';
+      categoriesAnnonces.forEach(cat => {
+        html += `<button class="filter-btn" onclick="filtrerParCategorieAnnonce('${cat}')">${cat}</button>`;
+      });
+      filterButtons.innerHTML = html;
+    }
+
+    function afficherAnnonces(annonces) {
+      const container = document.getElementById('annoncesContainer');
+      container.innerHTML = '';
+
+      if (annonces.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Aucune annonce trouvée</p>';
+        return;
+      }
+
+      const iconesParCategorie = {
+        'Commerce': 'fa-store',
+        'Événement': 'fa-calendar-alt',
+        'Service': 'fa-hands-helping',
+        'Emploi': 'fa-briefcase',
+        'Immobilier': 'fa-home',
+        'default': 'fa-bullhorn'
+      };
+
+      annonces.forEach(annonce => {
+        const iconeCategorie = iconesParCategorie[annonce.categorie] || iconesParCategorie.default;
+        
+        const hasImage = annonce.image && annonce.image !== '';
+        const imageContent = hasImage
+          ? `<img src="${annonce.image}" alt="${annonce.titre}" onerror="this.style.display='none'; this.parentElement.querySelector('.ad-fallback-icon').style.display='flex';">
+             <i class="fas ${iconeCategorie} ad-fallback-icon" style="display:none;"></i>`
+          : `<i class="fas ${iconeCategorie} ad-fallback-icon"></i>`;
+
+        const contactInfo = [];
+        if (annonce.telephone) contactInfo.push(`<span><i class="fas fa-phone"></i> ${annonce.telephone}</span>`);
+        if (annonce.email) contactInfo.push(`<span><i class="fas fa-envelope"></i> ${annonce.email}</span>`);
+
+        const card = `
+          <div class="ad-card">
+            <div class="ad-image ${hasImage ? 'has-image' : ''}">
+              ${imageContent}
+              <span class="ad-category">${annonce.categorie}</span>
+            </div>
+            <div class="ad-content">
+              <h4>${annonce.titre}</h4>
+              <p class="ad-commercant"><i class="fas fa-user"></i> ${annonce.commercant}</p>
+              <p>${annonce.description}</p>
+              ${contactInfo.length > 0 ? `<div class="ad-contact">${contactInfo.join('')}</div>` : ''}
+              ${annonce.lien ? `<a href="${annonce.lien}" target="_blank" class="btn btn-primary" style="margin-top: 15px;"><i class="fas fa-external-link-alt"></i> Visiter</a>` : ''}
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    function filtrerParCategorieAnnonce(categorie) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.trim() === categorie) {
+          btn.classList.add('active');
+        }
+      });
+
+      if (categorie === 'Toutes') {
+        afficherAnnonces(toutesLesAnnonces);
+      } else {
+        const annoncesFiltrees = toutesLesAnnonces.filter(a => a.categorie === categorie);
+        afficherAnnonces(annoncesFiltrees);
+      }
+    }
+
+    chargerAnnonces();
+  </script>
 
 </body>
 </html>

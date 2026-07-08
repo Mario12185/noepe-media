@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OSC - Canton de Noépé Media</title>
   
-  <!-- MÉTADONNÉES POUR PARTAGE SOCIAL (Open Graph) -->
   <meta property="og:title" content="OSC - Organisations du Canton">
   <meta property="og:description" content="Découvrez les organisations de la société civile partenaires du Canton de Noépé.">
   <meta property="og:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
@@ -13,21 +12,19 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="OSC - Organisations du Canton">
   <meta name="twitter:description" content="Découvrez les organisations de la société civile partenaires du Canton de Noépé">
   <meta name="twitter:image" content="https://mario12185.github.io/noepe-media/images/logo.png">
   
-  <!-- Description SEO -->
-  <meta name="description" content="Annuaire des organisations de la société civile (OSC) du Canton de Noépé. Éducation, santé, environnement et développement.">
+  <meta name="description" content="Annuaire des organisations de la société civile (OSC) du Canton de Noépé.">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SCRIPT GOOGLE SHEETS -->
+  <script src="google-sheets.js"></script>
 </head>
 
 <body>
@@ -66,12 +63,8 @@
         <i class="fas fa-search"></i>
         <input type="text" id="searchOSC" placeholder="Rechercher une organisation..." onkeyup="filtrerOSC()">
       </div>
-      <div class="filter-buttons">
+      <div class="filter-buttons" id="filterButtonsOSC">
         <button class="filter-btn active" onclick="filtrerParCategorieOSC('Toutes')">Toutes</button>
-        <button class="filter-btn" onclick="filtrerParCategorieOSC('Éducation')">Éducation</button>
-        <button class="filter-btn" onclick="filtrerParCategorieOSC('Santé')">Santé</button>
-        <button class="filter-btn" onclick="filtrerParCategorieOSC('Environnement')">Environnement</button>
-        <button class="filter-btn" onclick="filtrerParCategorieOSC('Développement')">Développement</button>
       </div>
     </div>
   </section>
@@ -79,7 +72,10 @@
   <!-- LISTE DES OSC -->
   <section class="osc-list">
     <div class="osc-grid" id="oscContainer">
-      <!-- Les OSC seront chargées ici dynamiquement -->
+      <p style="text-align:center; grid-column: 1/-1; padding: 40px;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><br>
+        Chargement des organisations...
+      </p>
     </div>
   </section>
 
@@ -90,21 +86,11 @@
         <h3>Noépé Media</h3>
         <p>La plateforme d'information officielle du Canton de Noépé</p>
         <div class="social-links">
-          <a href="https://facebook.com/noepemedia" target="_blank" title="Facebook" class="facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://wa.me/22892597879" target="_blank" title="WhatsApp" class="whatsapp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <a href="https://youtube.com/@noepemedia" target="_blank" title="YouTube" class="youtube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://twitter.com/noepemedia" target="_blank" title="Twitter" class="twitter">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://instagram.com/noepemedia" target="_blank" title="Instagram" class="instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
+          <a href="https://facebook.com/noepemedia" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/22892597879" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://youtube.com/@noepemedia" target="_blank" class="youtube"><i class="fab fa-youtube"></i></a>
+          <a href="https://twitter.com/noepemedia" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/noepemedia" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
       <div class="footer-section">
@@ -129,21 +115,80 @@
   </footer>
 
   <!-- BOUTON WHATSAPP FLOTTANT -->
-  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float" title="Contactez-nous sur WhatsApp">
+  <a href="https://wa.me/22892597879?text=Bonjour%20Noépé%20Media%20!" target="_blank" class="whatsapp-float">
     <i class="fab fa-whatsapp"></i>
   </a>
 
   <!-- SCRIPT -->
   <script>
     let toutesLesOSC = [];
+    let categoriesOSC = new Set();
 
-    fetch('data/osc.json')
-      .then(response => response.json())
-      .then(data => {
-        toutesLesOSC = data.organisations;
-        afficherOSC(toutesLesOSC);
-      })
-      .catch(error => console.error('Erreur:', error));
+    // CHARGER LES OSC DEPUIS GOOGLE SHEETS
+    async function chargerOSC() {
+      try {
+        const osc = await loadOSCFromSheet();
+        
+        if (osc && osc.length > 0) {
+          console.log('✅ OSC chargées depuis Google Sheets:', osc.length);
+          toutesLesOSC = osc.map(o => ({
+            id: o.id || Date.now(),
+            nom: o.nom || 'Sans nom',
+            categorie: o.categorie || 'Développement',
+            description: o.description || '',
+            logo: o.logo || '',
+            photo: o.photo || '',
+            siege: o.siege || '',
+            membres: parseInt(o.membres) || 0,
+            annee: parseInt(o.annee) || 2020,
+            contact: o.contact || ''
+          }));
+          
+          genererFiltresOSC();
+          afficherOSC(toutesLesOSC);
+        } else {
+          console.log('ℹ️ Google Sheets vide, chargement depuis fichier local...');
+          chargerOSCDepuisJSON();
+        }
+      } catch (error) {
+        console.error('❌ Erreur, chargement depuis fichier local:', error);
+        chargerOSCDepuisJSON();
+      }
+    }
+
+    function chargerOSCDepuisJSON() {
+      fetch('data/osc.json')
+        .then(response => response.json())
+        .then(data => {
+          toutesLesOSC = data.organisations;
+          genererFiltresOSC();
+          afficherOSC(toutesLesOSC);
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          document.getElementById('oscContainer').innerHTML = 
+            '<p style="text-align:center; grid-column: 1/-1;">Impossible de charger les organisations</p>';
+        });
+    }
+
+    function genererFiltresOSC() {
+      categoriesOSC.clear();
+      categoriesOSC.add('Éducation');
+      categoriesOSC.add('Santé');
+      categoriesOSC.add('Environnement');
+      categoriesOSC.add('Développement');
+      
+      toutesLesOSC.forEach(o => {
+        if (o.categorie) categoriesOSC.add(o.categorie);
+      });
+      
+      const filterButtons = document.getElementById('filterButtonsOSC');
+      let html = '<button class="filter-btn active" onclick="filtrerParCategorieOSC(\'Toutes\')">Toutes</button>';
+      categoriesOSC.forEach(cat => {
+        html += `<button class="filter-btn" onclick="filtrerParCategorieOSC('${cat}')">${cat}</button>`;
+      });
+      filterButtons.innerHTML = html;
+    }
 
     function afficherOSC(osc) {
       const container = document.getElementById('oscContainer');
@@ -154,7 +199,6 @@
         return;
       }
 
-      // Icônes par catégorie (fallback si pas de logo)
       const iconesParCategorie = {
         'Éducation': 'fa-graduation-cap',
         'Santé': 'fa-heartbeat',
@@ -166,14 +210,12 @@
       osc.forEach(org => {
         const iconeCategorie = iconesParCategorie[org.categorie] || iconesParCategorie.default;
 
-        // Gestion du logo
         const hasLogo = org.logo && org.logo !== '';
         const logoContent = hasLogo
           ? `<img src="${org.logo}" alt="${org.nom}" onerror="this.style.display='none'; this.parentElement.querySelector('.osc-fallback-icon').style.display='flex';">
              <i class="fas ${iconeCategorie} osc-fallback-icon" style="display:none;"></i>`
           : `<i class="fas ${iconeCategorie} osc-fallback-icon"></i>`;
 
-        // Gestion de la photo
         const hasPhoto = org.photo && org.photo !== '';
         const photoContent = hasPhoto
           ? `<img src="${org.photo}" alt="${org.nom}" class="osc-photo" onerror="this.style.display='none';">`
@@ -194,22 +236,10 @@
             <div class="osc-content">
               <p>${org.description}</p>
               <div class="osc-details">
-                <div class="detail-item">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span>Siège : ${org.siege}</span>
-                </div>
-                <div class="detail-item">
-                  <i class="fas fa-users"></i>
-                  <span>${org.membres} membres</span>
-                </div>
-                <div class="detail-item">
-                  <i class="fas fa-calendar"></i>
-                  <span>Fondée en ${org.annee}</span>
-                </div>
-                <div class="detail-item">
-                  <i class="fas fa-envelope"></i>
-                  <span>${org.contact}</span>
-                </div>
+                <div class="detail-item"><i class="fas fa-map-marker-alt"></i><span>Siège : ${org.siege}</span></div>
+                <div class="detail-item"><i class="fas fa-users"></i><span>${org.membres} membres</span></div>
+                <div class="detail-item"><i class="fas fa-calendar"></i><span>Fondée en ${org.annee}</span></div>
+                <div class="detail-item"><i class="fas fa-envelope"></i><span>${org.contact}</span></div>
               </div>
               <div class="osc-actions">
                 <a href="mailto:${org.contact}" class="btn btn-primary"><i class="fas fa-envelope"></i> Contacter</a>
@@ -247,6 +277,8 @@
       );
       afficherOSC(oscFiltrees);
     }
+
+    chargerOSC();
   </script>
 
 </body>
