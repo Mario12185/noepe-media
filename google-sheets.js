@@ -8,6 +8,39 @@ const GOOGLE_SHEET_CONFIG = {
   editUrl: 'https://docs.google.com/spreadsheets/d/1JF-RSd-JpCFdF3kk1i4DZA4OwsWkj6bY-tdk_V_7eNA/edit'
 };
 
+/**
+ * Convertit les valeurs spéciales de Google Sheets en format standard
+ */
+function formatGoogleValue(value) {
+  if (value === null || value === undefined) return '';
+  
+  // Si c'est une date au format "Date(YYYY,M,D)" ou datetime "Date(YYYY,M,D,H,M,S)"
+  if (typeof value === 'string' && value.startsWith('Date(')) {
+    const match = value.match(/Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)/);
+    if (match) {
+      if (match[4] !== undefined) {
+        // C'est une datetime (durée)
+        const hours = String(match[4]).padStart(2, '0');
+        const minutes = String(match[5]).padStart(2, '0');
+        return `${hours}:${minutes}`;
+      } else {
+        // C'est une date
+        const year = match[1];
+        const month = String(parseInt(match[2]) + 1).padStart(2, '0'); // Mois commence à 0
+        const day = String(match[3]).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+    }
+  }
+  
+  // Si c'est un nombre (peut être en notation scientifique)
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+  
+  return value;
+}
+
 async function fetchGoogleSheet(sheetName) {
   const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_CONFIG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   
@@ -28,7 +61,9 @@ async function fetchGoogleSheet(sheetName) {
       const obj = {};
       if (row.c) {
         row.c.forEach((cell, index) => {
-          obj[headers[index]] = cell ? (cell.v !== null ? cell.v : '') : '';
+          // Utiliser la valeur formatée si disponible, sinon la valeur brute
+          const value = cell ? (cell.f !== undefined ? cell.f : cell.v) : '';
+          obj[headers[index]] = formatGoogleValue(value);
         });
       }
       return obj;
@@ -56,4 +91,8 @@ async function loadAudioFromSheet() {
 
 async function loadOSCFromSheet() {
   return await fetchGoogleSheet('OSC');
+}
+
+async function loadAnnoncesFromSheet() {
+  return await fetchGoogleSheet('Annonces');
 }

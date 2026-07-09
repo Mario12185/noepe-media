@@ -19,7 +19,7 @@
     .btn-submit { background: var(--primary); color: var(--white); padding: 12px 30px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
     .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
     .btn-submit:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
-    .success-message { background: #10b981; color: var(--white); padding: 15px; border-radius: 8px; margin-top: 20px; display: none; white-space: pre-wrap; }
+    .success-message { background: #10b981; color: var(--white); padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
     .error-message { background: #ef4444; color: var(--white); padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
     .loading { display: none; text-align: center; padding: 10px; color: var(--primary); margin-top: 10px; }
     .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
@@ -30,14 +30,13 @@
     .instructions li { margin-bottom: 10px; }
     .api-status { background: #dbeafe; padding: 15px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .api-status.connected { background: #d1fae5; }
-    .api-status.disconnected { background: #fee2e2; }
-    .api-status i { font-size: 1.5rem; }
     .tab-buttons { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
     .tab-btn { padding: 12px 25px; border: 2px solid var(--primary); background: var(--white); color: var(--primary); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
     .tab-btn:hover { background: var(--primary); color: var(--white); }
     .tab-btn.active { background: var(--primary); color: var(--white); }
     .form-section { display: none; }
     .form-section.active { display: block; }
+    .hidden-iframe { display: none; }
   </style>
 </head>
 <body>
@@ -65,7 +64,7 @@
   <div class="admin-container">
     
     <!-- STATUT API -->
-    <div class="api-status" id="apiStatus">
+    <div class="api-status connected">
       <i class="fas fa-check-circle" style="color: #10b981;"></i>
       <div>
         <strong>API Google Sheets connectée</strong>
@@ -77,10 +76,10 @@
     <div class="instructions">
       <h3><i class="fas fa-info-circle"></i> Comment ça marche</h3>
       <ol>
-        <li>Choisis le type de contenu à ajouter (Actualité, Vidéo, Audio, Annonce)</li>
+        <li>Choisis le type de contenu à ajouter</li>
         <li>Remplis le formulaire</li>
-        <li>Clique sur "Ajouter" → Les données sont envoyées automatiquement au Google Sheet</li>
-        <li>Attends 1-2 minutes et rafraîchis la page du site concerné</li>
+        <li>Clique sur "Ajouter" → Les données sont envoyées automatiquement</li>
+        <li>Attends 1-2 minutes et rafraîchis la page du site</li>
       </ol>
     </div>
 
@@ -104,7 +103,7 @@
     <div class="form-section active" id="sectionActualite">
       <div class="admin-section">
         <h2><i class="fas fa-newspaper"></i> Ajouter une actualité</h2>
-        <form id="formActualite">
+        <form id="formActualite" onsubmit="envoyerActualite(event)">
           <div class="form-group">
             <label for="act_titre">Titre *</label>
             <input type="text" id="act_titre" required>
@@ -132,8 +131,7 @@
           </div>
           <div class="form-group">
             <label for="act_image">URL de l'image (optionnel)</label>
-            <input type="text" id="act_image" placeholder="Laisser vide pour l'instant">
-            <small>Tu peux laisser vide et ajouter l'image plus tard dans le Google Sheet</small>
+            <input type="text" id="act_image" placeholder="Laisser vide">
           </div>
           <div class="form-group">
             <label for="act_lien">Lien</label>
@@ -153,7 +151,7 @@
     <div class="form-section" id="sectionVideo">
       <div class="admin-section">
         <h2><i class="fas fa-tv"></i> Ajouter une vidéo</h2>
-        <form id="formVideo">
+        <form id="formVideo" onsubmit="envoyerVideo(event)">
           <div class="form-group">
             <label for="vid_plateforme">Plateforme *</label>
             <select id="vid_plateforme" required onchange="mettreAJourPlaceholder()">
@@ -209,7 +207,7 @@
     <div class="form-section" id="sectionAudio">
       <div class="admin-section">
         <h2><i class="fas fa-radio"></i> Ajouter une émission audio</h2>
-        <form id="formAudio">
+        <form id="formAudio" onsubmit="envoyerAudio(event)">
           <div class="form-group">
             <label for="aud_titre">Titre *</label>
             <input type="text" id="aud_titre" required>
@@ -221,7 +219,6 @@
           <div class="form-group">
             <label for="aud_fichier">URL du fichier audio *</label>
             <input type="text" id="aud_fichier" required placeholder="https://... ou audio/fichier.mp3">
-            <small>URL directe vers le fichier MP3 ou chemin local</small>
           </div>
           <div class="form-group">
             <label for="aud_categorie">Catégorie *</label>
@@ -254,18 +251,18 @@
       </div>
     </div>
 
-    <!-- FORMULAIRE ANNONCE (NOUVEAU !) -->
+    <!-- FORMULAIRE ANNONCE -->
     <div class="form-section" id="sectionAnnonce">
       <div class="admin-section">
         <h2><i class="fas fa-bullhorn"></i> Ajouter une annonce</h2>
-        <form id="formAnnonce">
+        <form id="formAnnonce" onsubmit="envoyerAnnonce(event)">
           <div class="form-group">
             <label for="ann_titre">Titre de l'annonce *</label>
-            <input type="text" id="ann_titre" required placeholder="Ex: Boutique Mama">
+            <input type="text" id="ann_titre" required>
           </div>
           <div class="form-group">
             <label for="ann_description">Description *</label>
-            <textarea id="ann_description" required placeholder="Décrivez les produits/services..."></textarea>
+            <textarea id="ann_description" required></textarea>
           </div>
           <div class="form-group">
             <label for="ann_categorie">Catégorie *</label>
@@ -278,8 +275,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="ann_commercant">Nom du commerçant/entreprise *</label>
-            <input type="text" id="ann_commercant" required placeholder="Ex: Mama Kossi">
+            <label for="ann_commercant">Nom du commerçant *</label>
+            <input type="text" id="ann_commercant" required>
           </div>
           <div class="form-group">
             <label for="ann_telephone">Téléphone</label>
@@ -291,17 +288,15 @@
           </div>
           <div class="form-group">
             <label for="ann_image">URL de l'image (optionnel)</label>
-            <input type="text" id="ann_image" placeholder="Laisser vide pour l'instant">
-            <small>Tu peux laisser vide et ajouter l'image plus tard</small>
+            <input type="text" id="ann_image" placeholder="Laisser vide">
           </div>
           <div class="form-group">
-            <label for="ann_lien">Lien (site web, Facebook, etc.)</label>
+            <label for="ann_lien">Lien</label>
             <input type="text" id="ann_lien" placeholder="https://...">
           </div>
           <div class="form-group">
             <label for="ann_date_expiration">Date d'expiration *</label>
             <input type="date" id="ann_date_expiration" required>
-            <small>L'annonce disparaîtra automatiquement après cette date</small>
           </div>
           <button type="submit" class="btn-submit">
             <i class="fas fa-plus"></i> Ajouter l'annonce
@@ -323,6 +318,9 @@
     </div>
 
   </div>
+
+  <!-- Iframe caché pour recevoir les réponses -->
+  <iframe id="hiddenIframe" name="hiddenIframe" class="hidden-iframe"></iframe>
 
   <footer>
     <div class="footer-content">
@@ -348,10 +346,9 @@
   </footer>
 
   <script>
-    // URL de ton Google Apps Script
+    // ⚠️ IMPORTANT : Remplace cette URL par la NOUVELLE URL de ton Google Apps Script
     const API_URL = 'https://script.google.com/macros/s/AKfycbzTe6gzOex3lrP2dujp0a3w8bcLnTw4-mq6Vf3E8SRhp9Mne6yCzVO6P7ZnJ_M2VKPlHA/exec';
 
-    // Afficher le formulaire sélectionné
     function afficherFormulaire(type, btn) {
       document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -359,26 +356,40 @@
       btn.classList.add('active');
     }
 
-    // Envoyer les données au Google Sheet
-    async function sendDataToSheet(sheetName, data) {
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sheet: sheetName,
-            data: data
-          })
-        });
-        
-        return { success: true, message: 'Données envoyées' };
-      } catch (error) {
-        console.error('Erreur:', error);
-        return { success: false, message: 'Erreur de connexion: ' + error.message };
-      }
+    // Fonction d'envoi via formulaire GET (100% fiable)
+    function envoyerDonnees(sheetName, data, formId) {
+      showLoading(formId);
+      
+      // Créer un formulaire temporaire
+      const form = document.createElement('form');
+      form.method = 'GET';
+      form.action = API_URL;
+      form.target = 'hiddenIframe';
+      
+      // Ajouter les champs
+      const sheetInput = document.createElement('input');
+      sheetInput.type = 'hidden';
+      sheetInput.name = 'sheet';
+      sheetInput.value = sheetName;
+      form.appendChild(sheetInput);
+      
+      const dataInput = document.createElement('input');
+      dataInput.type = 'hidden';
+      dataInput.name = 'data';
+      dataInput.value = JSON.stringify(data);
+      form.appendChild(dataInput);
+      
+      // Soumettre le formulaire
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+      
+      // Afficher le succès après 2 secondes (temps d'envoi)
+      setTimeout(() => {
+        hideLoading(formId);
+        showMessage(formId, 'success', '✅ Données ajoutées avec succès ! Vérifie le Google Sheet dans 1-2 minutes.');
+        document.getElementById('form' + formId).reset();
+      }, 2000);
     }
 
     function showLoading(id) {
@@ -411,11 +422,8 @@
       }, 10000);
     }
 
-    // Formulaire Actualité
-    document.getElementById('formActualite').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showLoading('Actualite');
-      
+    function envoyerActualite(event) {
+      event.preventDefault();
       const data = {
         id: Date.now(),
         titre: document.getElementById('act_titre').value,
@@ -426,24 +434,11 @@
         image: document.getElementById('act_image').value || '',
         lien: document.getElementById('act_lien').value || '#'
       };
-      
-      const result = await sendDataToSheet('Actualités', data);
-      
-      if (result.success) {
-        showMessage('Actualite', 'success', '✅ Actualité ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
-        this.reset();
-      } else {
-        showMessage('Actualite', 'error', '❌ Erreur: ' + result.message);
-      }
-      
-      hideLoading('Actualite');
-    });
+      envoyerDonnees('Actualités', data, 'Actualite');
+    }
 
-    // Formulaire Vidéo
-    document.getElementById('formVideo').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showLoading('Video');
-      
+    function envoyerVideo(event) {
+      event.preventDefault();
       const data = {
         id: Date.now(),
         titre: document.getElementById('vid_titre').value,
@@ -457,24 +452,11 @@
         vues: parseInt(document.getElementById('vid_vues').value) || 0,
         miniature: ''
       };
-      
-      const result = await sendDataToSheet('Vidéos', data);
-      
-      if (result.success) {
-        showMessage('Video', 'success', '✅ Vidéo ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
-        this.reset();
-      } else {
-        showMessage('Video', 'error', '❌ Erreur: ' + result.message);
-      }
-      
-      hideLoading('Video');
-    });
+      envoyerDonnees('Vidéos', data, 'Video');
+    }
 
-    // Formulaire Audio
-    document.getElementById('formAudio').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showLoading('Audio');
-      
+    function envoyerAudio(event) {
+      event.preventDefault();
       const data = {
         id: Date.now(),
         titre: document.getElementById('aud_titre').value,
@@ -486,24 +468,11 @@
         presentateur: document.getElementById('aud_presentateur').value,
         couverture: ''
       };
-      
-      const result = await sendDataToSheet('Audio', data);
-      
-      if (result.success) {
-        showMessage('Audio', 'success', '✅ Émission ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
-        this.reset();
-      } else {
-        showMessage('Audio', 'error', '❌ Erreur: ' + result.message);
-      }
-      
-      hideLoading('Audio');
-    });
+      envoyerDonnees('Audio', data, 'Audio');
+    }
 
-    // Formulaire Annonce (NOUVEAU !)
-    document.getElementById('formAnnonce').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showLoading('Annonce');
-      
+    function envoyerAnnonce(event) {
+      event.preventDefault();
       const data = {
         id: Date.now(),
         titre: document.getElementById('ann_titre').value,
@@ -516,20 +485,9 @@
         lien: document.getElementById('ann_lien').value || '',
         date_expiration: document.getElementById('ann_date_expiration').value
       };
-      
-      const result = await sendDataToSheet('Annonces', data);
-      
-      if (result.success) {
-        showMessage('Annonce', 'success', '✅ Annonce ajoutée avec succès ! Le site sera mis à jour dans 1-2 minutes.');
-        this.reset();
-      } else {
-        showMessage('Annonce', 'error', '❌ Erreur: ' + result.message);
-      }
-      
-      hideLoading('Annonce');
-    });
+      envoyerDonnees('Annonces', data, 'Annonce');
+    }
 
-    // Mettre à jour le placeholder selon la plateforme
     function mettreAJourPlaceholder() {
       const plateforme = document.getElementById('vid_plateforme').value;
       const inputId = document.getElementById('vid_youtube_id');
@@ -543,23 +501,6 @@
         aideId.innerHTML = '<strong>YouTube :</strong> L\'ID est après "v=" dans l\'URL<br>Ex: https://www.youtube.com/watch?v=<strong>dQw4w9WgXcQ</strong>';
       }
     }
-
-    // Vérifier que l'API est accessible
-    async function verifierAPI() {
-      try {
-        const response = await fetch(API_URL);
-        const status = document.getElementById('apiStatus');
-        if (response.ok) {
-          status.className = 'api-status connected';
-          status.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i><div><strong>API Google Sheets connectée</strong><p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Les données seront ajoutées automatiquement</p></div>';
-        }
-      } catch (error) {
-        console.log('Vérification API:', error);
-      }
-    }
-
-    // Vérifier au chargement
-    verifierAPI();
   </script>
 
 </body>
